@@ -134,7 +134,7 @@ export default function SearchUser({ user, navigation }) {
             </View>
             {
                 search != '' ?
-                    <View>
+                    <ScrollView showsVerticalScrollIndicator={false}>
                         {
                             Users.map((res, index) => {
                                 return (
@@ -197,7 +197,7 @@ export default function SearchUser({ user, navigation }) {
                             })
                         }
 
-                    </View>
+                    </ScrollView>
                     :
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {

@@ -11,7 +11,7 @@ const width = Dimensions.get('window').width;
 export default function FriendAwaitScreen({ route, navigation }) {
     const { myUser, allusers } = route?.params;
     const fbUser = firestore().collection('users');
-
+    const [check, setCheck] = useState({ uid: null, key: null });
 
     const Form = ({ data, clickDelete, clickAccept, check }) => {
 
@@ -45,6 +45,7 @@ export default function FriendAwaitScreen({ route, navigation }) {
                                                                 :
                                                                 <></>
                                                         }
+
                                                     </>
                                                 )
                                             }
@@ -58,9 +59,9 @@ export default function FriendAwaitScreen({ route, navigation }) {
 
                     {
 
-                        check === 1 ?
+                        (data.uid === check.uid && check.key === 1) ?
                             <Text>Các bạn đã là bạn bè</Text>
-                            : check === 0 ?
+                            : (data.uid === check.uid && check.key === 0) ?
                                 <Text>
                                     Đã gỡ lời mời
                                 </Text>
@@ -84,6 +85,41 @@ export default function FriendAwaitScreen({ route, navigation }) {
             </View>
         )
     }
+    async function acceptFriend(friend) {
+        await setCheck({ uid: friend.uid, key: 1 })
+        const index = myUser.friendAwait.indexOf(friend.uid);
+        myUser.friendAwait.splice(index, 1);
+        fbUser.doc(myUser.uid).update({
+            friendAwait: myUser.friendAwait
+        })
+        myUser.listFriends.push(friend.uid);
+        fbUser.doc(myUser.uid).update({
+            listFriends: myUser.listFriends
+        })
+        const index2 = friend.friendRequest.indexOf(myUser.uid)
+        friend.friendRequest.splice(index2, 1);
+        fbUser.doc(friend.uid).update({
+            friendRequest: friend.friendRequest
+        })
+        friend.listFriends.push(myUser.uid)
+        fbUser.doc(friend.uid).update({
+            listFriends: friend.listFriends
+        })
+
+    }
+    async function refuseFriend(friend) {
+        await setCheck({ uid: friend.uid, key: 0 });
+        const index = myUser.friendAwait.indexOf(friend.uid);
+        myUser.friendAwait.splice(index, 1);
+        fbUser.doc(myUser.uid).update({
+            friendAwait: myUser.friendAwait
+        })
+        const index2 = friend.friendRequest.indexOf(myUser.uid)
+        friend.friendRequest.splice(index2, 1);
+        fbUser.doc(friend.uid).update({
+            friendRequest: friend.friendRequest
+        })
+    }
 
     return (
         <View style={{ padding: 15, backgroundColor: 'white', flex: 1 }}>
@@ -99,44 +135,7 @@ export default function FriendAwaitScreen({ route, navigation }) {
                         <View>
                             {
                                 myUser.friendAwait.map(result => {
-
                                     if (res.uid == result) {
-                                        const [check, setCheck] = useState(99);
-                                        async function acceptFriend(friend) {
-                                            await setCheck(1)
-                                            const index = myUser.friendAwait.indexOf(friend.uid);
-                                            myUser.friendAwait.splice(index, 1);
-                                            fbUser.doc(myUser.uid).update({
-                                                friendAwait: myUser.friendAwait
-                                            })
-                                            myUser.listFriends.push(friend.uid);
-                                            fbUser.doc(myUser.uid).update({
-                                                listFriends: myUser.listFriends
-                                            })
-                                            const index2 = friend.friendRequest.indexOf(myUser.uid)
-                                            friend.friendRequest.splice(index2, 1);
-                                            fbUser.doc(friend.uid).update({
-                                                friendRequest: friend.friendRequest
-                                            })
-                                            friend.listFriends.push(myUser.uid)
-                                            fbUser.doc(friend.uid).update({
-                                                listFriends: friend.listFriends
-                                            })
-
-                                        }
-                                        async function refuseFriend(friend) {
-                                            await setCheck(0);
-                                            const index = myUser.friendAwait.indexOf(friend.uid);
-                                            myUser.friendAwait.splice(index, 1);
-                                            fbUser.doc(myUser.uid).update({
-                                                friendAwait: myUser.friendAwait
-                                            })
-                                            const index2 = friend.friendRequest.indexOf(myUser.uid)
-                                            friend.friendRequest.splice(index2, 1);
-                                            fbUser.doc(friend.uid).update({
-                                                friendRequest: friend.friendRequest
-                                            })
-                                        }
                                         return (
                                             <Form data={res} clickAccept={() => acceptFriend(res)} clickDelete={() => refuseFriend(res)} check={check} />
                                         )

@@ -8,6 +8,7 @@ import HeaderHome from '../components/HeaderHome'
 import FormPost from '../components/FormPost'
 import { launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage'
+import { getMaxListeners } from 'process';
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
@@ -199,7 +200,7 @@ export default function UserScreen({ user, route, navigation }) {
                             return (
                                 <View>
                                     {
-                                        allUsers.map((result, index) => {
+                                        allUsers.filter(res => res.uid != user.uid).map((result, index) => {
                                             if (res === result.uid)
                                                 return (
                                                     <View style={{ paddingBottom: 10 }}>
@@ -245,13 +246,13 @@ export default function UserScreen({ user, route, navigation }) {
     }
     function navigateFriend() {
         route?.params ?
-            navigation.navigate('SearchFriend', {
+            navigation.push('SearchFriend', {
                 myUser: myUser,
                 allUsers: allUsers,
                 myFriend: route?.params?.friend
             })
             :
-            navigation.navigate('SearchFriend', {
+            navigation.push('SearchFriend', {
                 myUser: myUser,
                 allUsers: allUsers,
             })
@@ -397,7 +398,7 @@ export default function UserScreen({ user, route, navigation }) {
                                     }
                                     <TouchableOpacity
                                         onPress={() => navigation.navigate('chat', {
-                                            name: route?.params?.friend.name, uid: route?.params?.friend.uid,
+                                            name: route?.params?.friend.name, uid: route?.params?.friend.uid, image: route?.params?.image,
                                             status: typeof (route?.params?.friend.status) == "string" ? route?.params?.friend.status : route?.params?.friend.status.toDate().toString()
                                         })}
                                         style={[styles.fb, { width: width * 0.13 }]}>
@@ -620,11 +621,11 @@ const styles = StyleSheet.create({
     },
     iconCamera: {
         backgroundColor: '#F0F0F0',
-        height: 40,
-        width: 40,
+        height: height * 0.05,
+        width: height * 0.05,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 20,
+        borderRadius: height * 0.1,
         borderWidth: 1,
         borderColor: '#D7D7D7',
         position: 'absolute',

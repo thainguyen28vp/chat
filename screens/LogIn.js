@@ -35,7 +35,7 @@ export default function Login({ navigation }) {
     async function SignIn(values) {
         setLoading(true)
         try {
-            const result = await auth().signInWithEmailAndPassword(values.email, values.password)
+            const result = await auth().signInWithEmailAndPassword(values.email.trim(), values.password.trim())
             setLoading(false)
         } catch (err) {
             setLoading(false);

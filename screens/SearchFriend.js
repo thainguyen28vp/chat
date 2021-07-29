@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Image, ScrollView } from 'react-native'
 import SearchInput from '../components/SearchInput';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 const width = Dimensions.get('window').width;
@@ -116,7 +116,7 @@ const SearchFriend = ({ route, navigation }) => {
                 <View style={{ alignItems: 'center', paddingTop: 10, paddingBottom: 10 }}>
                     <SearchInput value={valueIn} onChange={text => getValue(text)} placeholder='Tìm kiếm...' />
                 </View>
-                <View>
+                <ScrollView showsVerticalScrollIndicator={false}>
                     {
                         datas?.filter(x => x.uid != myUser.uid).map(res => {
                             return (
@@ -125,7 +125,7 @@ const SearchFriend = ({ route, navigation }) => {
                                         myFriend ?
                                             myFriend.listFriends.map(result => {
                                                 let sum = 0;
-                                                if (res.uid.localeCompare(result)) {
+                                                if (res.uid === result) {
                                                     if (myUser.listFriends.includes(result)) sum++;
                                                     return (
                                                         <Form result={res} sum={sum} onPress={() => navigation.push('UserScreen', { friend: res })} />
@@ -135,7 +135,8 @@ const SearchFriend = ({ route, navigation }) => {
                                             :
                                             myUser.listFriends.map(result => {
                                                 let sum = 0;
-                                                if (res.uid.localeCompare(result)) {
+                                                if (res.uid === result) {
+                                                    console.log(res);
                                                     if (res.listFriends.includes(result)) sum++;
                                                     return (
                                                         <Form result={res} sum={sum} onPress={() => navigation.push('UserScreen', { friend: res })} />
@@ -147,7 +148,7 @@ const SearchFriend = ({ route, navigation }) => {
                             )
                         })
                     }
-                </View>
+                </ScrollView>
             </View>
 
         </View>

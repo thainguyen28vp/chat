@@ -19,7 +19,7 @@ export default function Addgroupchat({ navigation, user }) {
 
     const [listF, setlistF] = useState([])
     const [listselect, setlistslect] = useState([])
-    const [namegroup, getnamegroup] = useState(null)
+    const [namegroup, getnamegroup] = useState("")
     const [image, setImage] = useState("");
 
     const [name1, setname1] = useState("");
@@ -94,7 +94,7 @@ export default function Addgroupchat({ navigation, user }) {
 
     }
     submit = () => {
-        if (namegroup != '' && usert.length >= 3) {
+        if (namegroup != "" && usert.length >= 3) {
             const mymsg = {
                 _id: 'abcxhscnajnjas',
                 text: 'chào mọi người',
@@ -105,7 +105,7 @@ export default function Addgroupchat({ navigation, user }) {
 
 
                 },
-                UserS: []
+
 
             }
             firestore().collection('chatrooms1')

@@ -411,19 +411,19 @@ export default function Chat({ navigation, user, route }) {
 
             let listtoken = [];
             listId?.map(res => {
-                allusers?.map(result => {
+                allusers?.filter(res => res.data().uid != user.uid).map(result => { // viết đỡ t . id khác id đang đăng nhập//là id ua cái gì// lọc ra mà trong đó k có id user đang đăng nhập
                     if (res === result.data().uid) listtoken.push(result.data().fcm)
                 })
             })
             listtoken.length != 0 &&
-                fetch('http://c80d71716f1f.ngrok.io/send-noti', {
+                fetch('http://5b525580c7bd.ngrok.io/send-noti', {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         tokens: listtoken,
-                        userName: name1, // lấy cho t tên thằng đăng nhập
+                        userName: listtoken.length == 1 ? name1 : name1 + ' đã gửi tin đến ' + name,
                         message: mymsg.text
                     })
                 })
