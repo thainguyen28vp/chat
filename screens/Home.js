@@ -88,16 +88,10 @@ export default function Home({ navigation, user }) {
                     {
 
                         users.map((value) => {
-
-
-                            return <TouchableOpacity onPress={() => navigation.navigate('chat', {
+                           return <TouchableOpacity onPress={() => navigation.navigate('chat', {
                                 name: value.name, uid: value.uid, image: value.image
-
-                            })}>
-
-
-
-                                <UserOnline SourecImg={value.image} NameUser={value.name} />
+                          })}>
+                              <UserOnline SourecImg={value.image} NameUser={value.name} />
                             </TouchableOpacity>
                         })
                     }
