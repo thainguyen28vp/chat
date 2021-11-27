@@ -32,6 +32,11 @@ import SearchFriend from './screens/SearchFriend';
 import NewPost from './screens/NewPost';
 import Addgroupchat from './screens/Addgroupchat';
 import RNBootSplash from "react-native-bootsplash";
+import Admin from './screens/Admin';
+import ListUser from './screens/Admin/listUser';
+import DetailUser from './screens/Admin/detailUser';
+import ListPost from './screens/Admin/listPost';
+import DetailPost from './screens/Admin/detailPost';
 const Stack = createStackNavigator();
 
 
@@ -53,7 +58,9 @@ const Navigation = () => {
   const [user, setuser] = useState('')
 
   useEffect(() => {
-    RNBootSplash.hide();
+    setTimeout(() => {
+      RNBootSplash.hide();
+    }, 600);
     const unregister = auth().onAuthStateChanged(userExist => {
       if (userExist) {
         messaging().getToken().then(token => {
@@ -153,7 +160,11 @@ const Navigation = () => {
           </>
           :
           <>
-
+            <Stack.Screen name="admin" component={Admin} options={{ headerShown: false }} />
+            <Stack.Screen name="detailUser" component={DetailUser} options={{ headerShown: false }} />
+            <Stack.Screen name="detailPost" component={DetailPost} options={{ headerShown: false }} />
+            <Stack.Screen name="listUser" component={ListUser} options={{ headerShown: false }} />
+            <Stack.Screen name="listPost" component={ListPost} options={{ headerShown: false }} />
             <Stack.Screen name="logIn" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="signIn" component={SignUp} options={{ headerShown: false }} />
 
