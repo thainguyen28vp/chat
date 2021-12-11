@@ -37,6 +37,12 @@ import ListUser from './screens/Admin/listUser';
 import DetailUser from './screens/Admin/detailUser';
 import ListPost from './screens/Admin/listPost';
 import DetailPost from './screens/Admin/detailPost';
+import Pending from './screens/Admin/Pending';
+import Canceled from './screens/Admin/Canceled';
+import Approved from './screens/Admin/Approved';
+import CommentScreen from './screens/CommentScreen';
+import { UpdateProfile } from './screens/UpdateProfile';
+
 const Stack = createStackNavigator();
 
 
@@ -132,6 +138,12 @@ const Navigation = () => {
             <Stack.Screen name="UserScreen">
               {props => <UserScreen {...props} user={user} />}
             </Stack.Screen>
+            <Stack.Screen name="UpdateProfile">
+              {props => <UpdateProfile {...props} user={user} />}
+            </Stack.Screen>
+            <Stack.Screen name="commentScreen">
+              {props => <CommentScreen {...props} user={user} />}
+            </Stack.Screen>
             <Stack.Screen name="NewPost">
               {props => <NewPost {...props} user={user} />}
             </Stack.Screen>
@@ -165,6 +177,9 @@ const Navigation = () => {
             <Stack.Screen name="detailPost" component={DetailPost} options={{ headerShown: false }} />
             <Stack.Screen name="listUser" component={ListUser} options={{ headerShown: false }} />
             <Stack.Screen name="listPost" component={ListPost} options={{ headerShown: false }} />
+            <Stack.Screen name="pending" component={Pending} options={{ headerShown: false }} />
+            <Stack.Screen name="canceled" component={Canceled} options={{ headerShown: false }} />
+            <Stack.Screen name="approved" component={Approved} options={{ headerShown: false }} />
             <Stack.Screen name="logIn" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="signIn" component={SignUp} options={{ headerShown: false }} />
 

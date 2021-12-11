@@ -1,18 +1,31 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, Image, View, ScrollView } from 'react-native'
 import ButtonCustom from '../../components/ButtonCustom'
 import UserOnline from '../../components/UserOnline'
 import { HeaderCustomBot } from './custom'
-export default function DetailUser({ navigation }) {
+import firestore from '@react-native-firebase/firestore'
+
+
+export default function DetailUser({ navigation, route }) {
+    const [details, setdetails] = useState([])
+    useEffect(async () => {
+
+        const data = await firestore().collection('users').where('uid', '==', route.params).get()
+
+        const user = data.docs.map(res => res.data())
+        setdetails(user)
+
+    })
+
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
-            <HeaderCustomBot title='Thái nguyễn' back={() => navigation.pop()} />
+            <HeaderCustomBot title={details[0]?.name} back={() => navigation.pop()} />
             <View style={{ borderBottomEndRadius: 10, backgroundColor: '#99BEFF', borderBottomStartRadius: 10, flexDirection: 'row', justifyContent: 'center', paddingVertical: 16 }}>
-                <Image source={{ uri: 'https://scontent.fhan5-3.fna.fbcdn.net/v/t1.6435-9/103251197_583143952622403_1519974222007604850_n.jpg?_nc_cat=106&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=wnmKF4ZlQu4AX_c74Nu&_nc_ht=scontent.fhan5-3.fna&oh=86e3806e3abb058301497cc57443e0b7&oe=61C79341' }} style={{ width: 100, height: 100, borderRadius: 50 }} />
+                <Image source={{ uri: details[0]?.image }} style={{ width: 100, height: 100, borderRadius: 50 }} />
                 <View style={{ marginHorizontal: 15 }}></View>
                 <View style={{}}>
-                    <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#fff' }}>Thái nguyễn</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>Thai2kvsvtvp@gmail.com</Text>
+                    <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#fff' }}>{details[0]?.name}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{details[0]?.email}</Text>
                     <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#fff' }}>Vĩnh Phúc</Text>
 
                 </View>
@@ -43,17 +56,17 @@ export default function DetailUser({ navigation }) {
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                     <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Bạn bè : </Text>
-                    <Text style={{ fontSize: 16, color: '#000', }}>500 người</Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}>{details[0]?.listFriends.length} người</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                     <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Yêu cầu kết bạn : </Text>
-                    <Text style={{ fontSize: 16, color: '#000', }}>5 yêu cầu</Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}>{details[0]?.friendAwait.length} yêu cầu</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                     <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Lời mời kết bạn : </Text>
-                    <Text style={{ fontSize: 16, color: '#000', }}>5 lời mời</Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}>{details[0]?.friendRequest.length} lời mời</Text>
                 </View>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000', marginVertical: 20 }}>Lịch sử tìm kiếm</Text>
 

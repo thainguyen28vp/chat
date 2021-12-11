@@ -6,8 +6,8 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 export const IconUser = (props) => (
     <Svg
-        width={90}
-        height={90}
+        width={70}
+        height={70}
         viewBox="0 0 90 90"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -102,8 +102,8 @@ export const Ic_cong = (props) => (
 
 export const Ic_thongke = (props) => (
     <Svg
-        width={34}
-        height={34}
+        width={28}
+        height={28}
         viewBox="0 0 34 34"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -149,8 +149,8 @@ export const Ic_back = (props) => (
 );
 export const Ic_post = (props) => (
     <Svg
-        width={90}
-        height={90}
+        width={70}
+        height={70}
         viewBox="0 0 90 90"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -182,8 +182,8 @@ export const Ic_post = (props) => (
 
 export const Ic_admin = (props) => (
     <Svg
-        width={90}
-        height={90}
+        width={70}
+        height={70}
         viewBox="0 0 90 90"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -221,8 +221,8 @@ export const Ic_admin = (props) => (
 );
 export const Ic_duyet = (props) => (
     <Svg
-        width={36}
-        height={36}
+        width={28}
+        height={28}
         viewBox="0 0 36 36"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -246,8 +246,8 @@ export const Ic_duyet = (props) => (
 );
 export const Ic_Kduyet = (props) => (
     <Svg
-        width={40}
-        height={40}
+        width={30}
+        height={30}
         viewBox="0 0 40 40"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -257,6 +257,22 @@ export const Ic_Kduyet = (props) => (
             d="M8.33333 20L16.6667 28.3333L33.3333 11.6667"
             stroke="#8EA0AB"
             strokeWidth={4}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </Svg>
+);
+export const Ic_ScrollModal = (props) => (
+    <Svg width={45} height={4} viewBox="0 0 45 4" fill="none" {...props}>
+        <Rect width={45} height={4} rx={2} fill="#8EA0AB" />
+    </Svg>
+);
+export const Ic_active = (props) => (
+    <Svg width={12} height={10} viewBox="0 0 12 10" fill="none" {...props}>
+        <Path
+            d="M1 5L5 9L11 1"
+            stroke="white"
+            strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
         />

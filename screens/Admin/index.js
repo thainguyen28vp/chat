@@ -71,6 +71,7 @@ export default function Admin({ navigation }) {
                 navigation.navigate('listPost');
                 break;
             case 2:
+                navigation.navigate('logIn');
                 break;
         }
     }
@@ -93,7 +94,7 @@ export default function Admin({ navigation }) {
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ flex: 1, backgroundColor: '#005CFF' }}>
+            style={{ flex: 1, backgroundColor: '#005CFF' }}>
             <StatusBar translucent backgroundColor='transparent' barStyle='light-content' />
             <LinearGradient start={{ x: 0.0, y: 0.0 }} end={{ x: 0.6, y: 0.5 }}
                 colors={['#FFFFFF', '#005CFF']} style={{ height: 486, width: 486, position: 'absolute', left: 86, top: -293, borderRadius: 486 / 2 }}>
@@ -119,7 +120,7 @@ export default function Admin({ navigation }) {
                     <PieChart
                         data={data}
                         width={deviceWidth - 32}
-                        height={300}
+                        height={deviceWidth * 0.6}
 
                         accessor={"population"}
                         backgroundColor={"transparent"}

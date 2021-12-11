@@ -5,10 +5,13 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import firestore from '@react-native-firebase/firestore'
 import ActionSheet from 'react-native-actionsheet'
 import HeaderHome from '../components/HeaderHome'
-import FormPost from '../components/FormPost'
+import { FormPost, FormPostComment } from '../components/FormPost'
 import { launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage'
 import { getMaxListeners } from 'process';
+import { ModalComment } from './ModalComent';
+import { ModalLoading } from '../components/Loading';
+import { HeaderCustomBot } from './Admin/custom';
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
@@ -20,7 +23,11 @@ export default function UserScreen({ user, route, navigation }) {
     const [post, setPost] = useState([])
     const [visible, setvisible] = useState(false)
     const [urlImage, setUrlImage] = useState([])
-
+    const [visibleModal, setvisibleModal] = useState(false)
+    const [loadingData, setLoadingdata] = useState(false)
+    const [textSearch, setTextSearch] = useState(false)
+    const [dataIdPost, setDataIdApost] = useState(-1)
+    const [dataApost, setDataApost] = useState({})
     let actionSheet = useRef();
 
 
@@ -176,8 +183,8 @@ export default function UserScreen({ user, route, navigation }) {
             <TouchableOpacity
                 onPress={onPress}
                 style={[styles.formAddFriend, styles.fb]}>
-                <Text style={{ fontSize: 16, paddingRight: 5 }}>{title}</Text>
-                <FontAwesome5 name={iconName} size={20} />
+                <Text style={{ fontSize: 16, paddingRight: 10 }}>{title}</Text>
+                <FontAwesome5 name={iconName} size={20} color='#8EA0AB' />
             </TouchableOpacity>
         )
     }
@@ -185,29 +192,29 @@ export default function UserScreen({ user, route, navigation }) {
         return (
             <View style={styles.formProfile}>
                 <View style={{ width: width * 0.08, alignItems: 'center' }}>
-                    <FontAwesome5 name={iconName} size={20} />
+                    <FontAwesome5 name={iconName} size={20} color='#8EA0AB' />
                 </View>
                 <Text>{title}</Text>
             </View>
         )
     }
-    const MyFriend = ({ numberFrom, numberTo }) => {
+    const MyFriend = () => {
         return (
             route?.params ?
                 <View style={styles.flexRB}>
                     {
-                        route?.params?.friend.listFriends.slice(numberFrom, numberTo).map(res => {
+                        route?.params?.friend.listFriends.map(res => {
                             return (
-                                <View>
+                                <View style={[styles.flexRB, { width: '33%' }]}>
                                     {
-                                        allUsers.filter(res => res.uid != user.uid).map((result, index) => {
-                                            if (res === result.uid)
+                                        allUsers.map((result, index) => {
+                                            if (res == result.uid)
                                                 return (
-                                                    <View style={{ paddingBottom: 10 }}>
+                                                    <View style={{ padding: 8, width: '100%', }}>
                                                         <Image source={{ uri: result.image }}
                                                             style={styles.avtMyfriend}
                                                         />
-                                                        <Text>{result.name}</Text>
+                                                        <Text style={{ marginTop: 5, textAlign: 'center', fontSize: 16, fontWeight: 'bold' }}>{result.name}</Text>
                                                     </View>
                                                 )
                                         })
@@ -220,18 +227,18 @@ export default function UserScreen({ user, route, navigation }) {
                 :
                 <View style={styles.flexRB}>
                     {
-                        myUser?.listFriends?.slice(numberFrom, numberTo).map(res => {
+                        myUser?.listFriends?.map(res => {
                             return (
-                                <View>
+                                <View style={[styles.flexRB, { width: '33%' }]}>
                                     {
                                         allUsers.map((result, index) => {
                                             if (res === result.uid)
                                                 return (
-                                                    <View style={{ paddingBottom: 10 }}>
+                                                    <View style={{ padding: 8, width: '100%' }}>
                                                         <Image source={{ uri: result.image }}
                                                             style={styles.avtMyfriend}
                                                         />
-                                                        <Text>{result.name}</Text>
+                                                        <Text style={{ marginTop: 5, textAlign: 'center', fontSize: 16, fontWeight: 'bold' }}>{result.name}</Text>
                                                     </View>
                                                 )
                                         })
@@ -313,19 +320,43 @@ export default function UserScreen({ user, route, navigation }) {
 
         })
     }
+    async function like(idPost, uid) {
+        let data = {}
+        let ar = []
+        data = await firestore().collection('Post').doc(uid).collection('posts').doc(idPost).get();
+        ar = data.data().like;
+        if (ar.includes(user.uid)) {
+            const index = ar.indexOf(user.uid);
+            ar.splice(index, 1);
+        }
+        else {
+            ar = data.data().like;
+            ar.push(user.uid);
+        }
+        firestore()
+            .collection('Post')
+            .doc(uid)
+            .collection('posts')
+            .doc(idPost)
+            .update({
+                like: ar
+            })
+            .then(() => {
+                console.log('updated!');
+            });
+    }
+    async function openComment(idPost, uid) {
+
+        navigation.navigate('commentScreen', { idPost, uid, myUser });
+        //console.log(data.data());
+    }
+
     return (
         <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: 'white' }}>
             {
                 route?.params ?
-                    <View style={styles.header}>
+                    <HeaderCustomBot title={route?.params?.friend?.name} back={() => navigation.pop()} />
 
-                        <Text style={{ textAlign: 'center', fontSize: 18 }}>
-                            {route?.params?.name}
-                        </Text>
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: 'absolute', left: 15, padding: 10 }} >
-                            <FontAwesome5 name='arrow-left' size={20} />
-                        </TouchableOpacity>
-                    </View>
                     :
                     <HeaderHome
                         title='Cá nhân'
@@ -402,7 +433,7 @@ export default function UserScreen({ user, route, navigation }) {
                                             status: typeof (route?.params?.friend.status) == "string" ? route?.params?.friend.status : route?.params?.friend.status.toDate().toString()
                                         })}
                                         style={[styles.fb, { width: width * 0.13 }]}>
-                                        <FontAwesome5 name='facebook-messenger' size={20} />
+                                        <FontAwesome5 name='facebook-messenger' size={20} color='#8EA0AB' />
                                     </TouchableOpacity>
                                     <View style={[styles.fb, { width: width * 0.13 }]}>
                                         <Text style={{ fontSize: 16, fontWeight: 'bold', padding: 10 }}>...</Text>
@@ -410,10 +441,12 @@ export default function UserScreen({ user, route, navigation }) {
                                 </View>
                                 :
                                 <View style={styles.buttonadd}>
-                                    <View style={[styles.formAddFriend, styles.fb, { width: width * 0.75 }]}>
-                                        <Text style={{ fontSize: 16, paddingRight: 5 }}> Chỉnh sửa trang cá nhân</Text>
-                                        <FontAwesome5 name='pen' size={20} />
-                                    </View>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('UpdateProfile')}
+                                        style={[styles.formAddFriend, styles.fb, { width: width * 0.75 }]}>
+                                        <Text style={{ fontSize: 16, paddingVertical: 5, marginHorizontal: 10 }}>Cập nhật thông tin cá nhân</Text>
+                                        <FontAwesome5 name='pen' size={18} color='#8EA0AB' />
+                                    </TouchableOpacity>
                                     <View style={[styles.fb, { width: width * 0.13 }]}>
                                         <Text style={{ fontSize: 16, fontWeight: 'bold', padding: 10 }}>...</Text>
                                     </View>
@@ -428,19 +461,30 @@ export default function UserScreen({ user, route, navigation }) {
                         />
                     </View>
 
-                    <View style={styles.profile}>
-                        <FormProfile iconName='graduation-cap' title='Đã học tại THPT Lê Xoay' />
-                        <FormProfile iconName='map-marker-alt' title='Hà nội' />
-                        <FormProfile iconName='home' title='Đến từ Vĩnh phúc' />
-                        <FormProfile iconName='heart' title='Độc thân' />
-                        <FormProfile iconName='birthday-cake' title='28-11-2000' />
-                    </View>
+                    {
+                        !route?.params ? <View style={styles.profile}>
+                            {myUser?.hocvan && <FormProfile iconName='graduation-cap' title={myUser?.hocvan} />}
+                            {myUser?.sinhsong && <FormProfile iconName='map-marker-alt' title={myUser?.sinhsong} />}
+                            {myUser?.quequan && <FormProfile iconName='home' title={myUser?.quequan} />}
+                            {myUser?.TTHN && <FormProfile iconName='heart' title={myUser?.TTHN} />}
+                            {myUser?.birtday && <FormProfile iconName='birthday-cake' title={myUser?.birtday} />}
+                        </View>
+                            :
+                            <View style={styles.profile}>
+                                {route?.params?.hocvan && <FormProfile iconName='graduation-cap' title={route?.params?.hocvan} />}
+                                {route?.params?.sinhsong && <FormProfile iconName='map-marker-alt' title={route?.params?.sinhsong} />}
+                                {route?.params?.quequan && <FormProfile iconName='home' title={route?.params?.quequan} />}
+                                {route?.params?.TTHN && <FormProfile iconName='heart' title={route?.params?.TTHN} />}
+                                {route?.params?.birtday && <FormProfile iconName='birthday-cake' title={route?.params?.birtday} />}
+                            </View>
+                    }
+
                     <View>
                         <View style={{ marginBottom: 10 }}>
                             <Text style={{ fontWeight: 'bold' }}>Bạn bè</Text>
                             {
                                 route?.params ?
-                                    <Text>{route?.params?.friend.listFriends.length}
+                                    <Text style={{ fontSize: 14, }}>{route?.params?.friend.listFriends.length} Bạn bè
                                         {
                                             myUser?.listFriends?.map(result => {
                                                 let sum = 0;
@@ -458,11 +502,10 @@ export default function UserScreen({ user, route, navigation }) {
                                         }
                                     </Text>
                                     :
-                                    <Text>{myUser?.listFriends?.length}</Text>
+                                    <Text style={{ fontSize: 14, }}>{myUser?.listFriends?.length} Bạn bè</Text>
                             }
                         </View>
-                        <MyFriend numberFrom={0} numberTo={3} />
-                        <MyFriend numberFrom={3} numberTo={6} />
+                        <MyFriend />
                         <TouchableOpacity
                             onPress={() => navigateFriend()}
                             style={styles.allFriend}>
@@ -479,7 +522,7 @@ export default function UserScreen({ user, route, navigation }) {
                     <View style={styles.headerpost}></View>
                     <View style={{ padding: 10 }}>
 
-                        <View style={styles.flexRB}>
+                        <View style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Bài viết</Text>
                             <Text style={{ color: 'skyblue' }}>Bộ lọc</Text>
                         </View>
@@ -526,8 +569,14 @@ export default function UserScreen({ user, route, navigation }) {
                         {
                             post.map(result => {
                                 if (result.data())
+                                    // console.log(result.id);
                                     return (
                                         <FormPost
+                                            checklike={result.data().like.includes(user.uid)}
+                                            comment={() => openComment(result.id, route?.params?.friend?.uid ? route?.params?.friend.uid : user.uid)}
+                                            like={result.data().like.length}
+                                            commentLength={result.data().comments.length}
+                                            onPressLike={() => like(result.id, route?.params?.friend?.uid ? route?.params?.friend.uid : user.uid)}
                                             sourceImg={result.data().image}
                                             userName={route?.params ? route?.params?.friend.name : myUser.name}
                                             title={result.data().title}
@@ -540,6 +589,8 @@ export default function UserScreen({ user, route, navigation }) {
                     </View>
                 }
             </View>
+
+            <ModalLoading visible={loadingData} />
         </ScrollView >
     )
 
@@ -563,7 +614,7 @@ const styles = StyleSheet.create({
         width: width * 0.6,
     },
     fb: {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#F3F7F9',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10
@@ -648,8 +699,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     flexRB: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        flexDirection: 'row', flexWrap: 'wrap',
     },
     align3:
     {

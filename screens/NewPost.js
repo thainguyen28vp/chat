@@ -68,13 +68,22 @@ export default function NewPost({ navigation, user, route }) {
         await firestore().collection('Post').doc(user.uid).collection('posts').add({
             title: textInput.trim() ? textInput : null,
             image: datas?.image ? datas?.image : [],
-            createAt: new Date()
-        })
+            createAt: new Date(),
+            like: [],
+            avt: myUser.image,
+            email: user.email,
+            name: myUser.name,
+            status: 0,
+            uid: user.uid,
+            comments: []
+        });
         firestore().collection('Post').doc(user.uid).update({ image: [] })
+        navigation.pop();
+        // firestore().collection('Post').doc(user.uid).update({ image: [] })
         // if (datas?.image) Image.getSize(datas?.image, (width, height) => {
         //     console.log(width, height);
         // })
-        navigation.goBack()
+        //
     }
     function deleteImage(index) {
         let list = datas?.image

@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
 import { deviceWidth, HeaderCustomBot } from './custom';
 import { Ic_cong, Ic_goto, Ic_search, Ic_thongke } from './iconSVG'
 import { ModalSignup } from './modal';
+import firestore from '@react-native-firebase/firestore'
 const screenWidth = Dimensions.get("window").width;
 import {
     LineChart,
@@ -12,22 +13,43 @@ import {
     ContributionGraph,
     StackedBarChart
 } from "react-native-chart-kit";
+import { ModalLoading } from '../../components/Loading';
 export default function ListUser({ navigation }) {
+
+
     const [visible, setVisible] = useState(false)
     const [hide, setHide] = useState(false)
-    const Form = () => {
+    const [datauser, setdatau] = useState([])
+    const [loading, setLoading] = useState(true)
+    useEffect(async () => {
+        // firestore().collection('users').get().then(data => {
+        //     // setdata(docSnap.data())
+        //     console.log('data', data.data())
+        const data = await firestore().collection('users').get()
+
+        const allusers = data.docs.map(res => res.data())
+        await setdatau(allusers)
+        setLoading(false);
+    })
+    const Form = ({ item }) => {
         return <TouchableOpacity
-            onPress={() => navigation.navigate('detailUser')}
+            onPress={() => navigation.navigate('detailUser', item.uid)}
             style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#CFE1ED', paddingVertical: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image source={{ uri: 'https://scontent.fhan5-3.fna.fbcdn.net/v/t1.6435-9/103251197_583143952622403_1519974222007604850_n.jpg?_nc_cat=106&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=wnmKF4ZlQu4AX_c74Nu&_nc_ht=scontent.fhan5-3.fna&oh=86e3806e3abb058301497cc57443e0b7&oe=61C79341' }} style={{ width: 60, height: 60, borderRadius: 30 }} />
-                <Text style={{ fontSize: 18, fontWeight: 'bold', marginLeft: 10 }}>Thái nguyễn</Text>
+                <Image source={{ uri: item.image }} style={{ width: 60, height: 60, borderRadius: 30 }} />
+                <Text style={{ fontSize: 18, fontWeight: 'bold', marginLeft: 10 }}>{item.name}</Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#05B621' }}></View>
-                <Text style={{ fontSize: 14, marginRight: 16, marginLeft: 5, textAlign: 'center' }}>online</Text>
-                <Ic_goto />
-            </View>
+            {item.status == 'online' ?
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#05B621' }}></View>
+                    <Text style={{ fontSize: 14, marginRight: 16, marginLeft: 5, textAlign: 'center' }}>online</Text>
+                    <Ic_goto />
+                </View> : <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: 'grey' }}></View>
+                    <Text style={{ fontSize: 14, marginRight: 16, marginLeft: 5, textAlign: 'center' }}>offline</Text>
+                    <Ic_goto />
+                </View>
+            }
         </TouchableOpacity>
     }
     const data = {
@@ -100,11 +122,12 @@ export default function ListUser({ navigation }) {
             }
             <View style={{ paddingHorizontal: 16 }}>
                 {
-                    [1, 2, 3, 4, 5, 6, 6, 6, 6, 6].map(res => {
-                        return <Form />
+                    datauser.map(res => {
+                        return <Form item={res} />
                     })
                 }
             </View>
+            <ModalLoading visible={loading} />
             <ModalSignup isVisible={visible} onPressClose={() => setVisible(false)} />
         </ScrollView>
     )

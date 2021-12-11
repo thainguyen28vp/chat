@@ -24,3 +24,43 @@ export const HeaderCustomBot = (props) => {
         </TouchableOpacity>
     </View >
 }
+export const Form = (props) => {
+    return <View style={{
+        margin: 10,
+        width: '45%',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 10,
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        },
+        elevation: 6,
+        shadowRadius: 5,
+        shadowOpacity: 1.0
+    }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
+
+            <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Người đăng : </Text>
+            <Text style={{ fontSize: 16, color: '#000', }}>{props.item?.data?.name}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
+
+            <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Nội dung : </Text>
+            <Text numberOfLines={1} style={{ fontSize: 16, color: '#000', width: (deviceWidth - 100) / 3 }}>{props.item?.data?.title}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
+
+            <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Số lượng ảnh : </Text>
+            <Text style={{ fontSize: 16, color: '#000', }}>{props.item?.data?.image.length}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
+
+            <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Thời gian tạo : </Text>
+
+            <Text numberOfLines={1} style={{ fontSize: 16, color: '#000', width: (deviceWidth - 200) / 3 }}>{'hihi'}</Text>
+        </View>
+        <Text onPress={props.onPress} style={{ fontSize: 16, color: '#2F80ED', fontWeight: 'bold', textAlign: 'center', paddingTop: 10 }}>Xem chi tiết {'>'}</Text>
+    </View>
+}

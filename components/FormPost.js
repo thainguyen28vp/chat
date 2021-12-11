@@ -1,7 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-export default function FormPost({ sourceImg, title, userName, avtImage, openImage }) {
+import { deviceHeight, deviceWidth } from '../screens/Admin/custom'
+export const FormPost = ({ sourceImg, title, userName, avtImage, openImage, onPressLike, like, comment, checklike, commentLength }) => {
     return (
         <View>
             <View style={styles.header}></View>
@@ -55,15 +56,21 @@ export default function FormPost({ sourceImg, title, userName, avtImage, openIma
                     }
                 </TouchableOpacity>
             </View>
+            <View style={{ justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+                {like != 0 && <Text style={{ color: '#A0A4A8' }}>{like} lượt thích</Text>}
+                {commentLength != 0 && <Text style={{ color: '#A0A4A8' }}>{commentLength} bình luận</Text>}
+            </View>
             <View style={styles.formlike}>
-                <View style={styles.flexrow}>
-                    <FontAwesome5 name='thumbs-up' size={20} color='grey' style={{ paddingRight: 3 }} />
-                    <Text style={styles.txt}>Thích</Text>
-                </View>
-                <View style={styles.flexrow}>
+                <TouchableOpacity style={styles.flexrow} onPress={onPressLike}>
+                    <FontAwesome5 name='thumbs-up' size={20} color={checklike ? 'blue' : 'grey'} style={{ paddingRight: 3 }} />
+                    <Text style={[styles.txt, checklike && { color: 'blue' }]}>Thích</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={comment}
+                    style={styles.flexrow}>
                     <FontAwesome5 name='comment-alt' size={20} color='grey' style={{ paddingRight: 3 }} />
                     <Text style={styles.txt}>Bình luận</Text>
-                </View>
+                </TouchableOpacity>
                 <View style={styles.flexrow}>
                     <FontAwesome5 name='share' size={20} color='grey' style={{ paddingRight: 3 }} />
                     <Text style={styles.txt}>Chia sẻ</Text>
@@ -72,6 +79,70 @@ export default function FormPost({ sourceImg, title, userName, avtImage, openIma
         </View>
     )
 }
+export const FormPostComment = ({ sourceImg, title, userName, avtImage, openImage, onPressLike, like, comment, checklike }) => {
+    return (
+        <View >
+            <View style={{ marginBottom: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: deviceWidth - 20 }}>
+
+                <View>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Image source={{ uri: avtImage }} style={styles.avt} />
+                        <View>
+                            <Text style={styles.txtName}>{userName}</Text>
+                            <View style={styles.flexrow}>
+                                <Text style={styles.txt}>6 giờ</Text>
+                                <Text style={{ marginHorizontal: 5 }}>.</Text>
+                                <FontAwesome5 name='globe-asia' size={16} color='grey' />
+                            </View>
+                        </View>
+                    </View>
+                    {
+                        title != null && <Text style={{ fontSize: 16, padding: 15 }}>{title}</Text>
+                    }
+                </View>
+                <View>
+
+                    <TouchableOpacity onPress={openImage} activeOpacity={0.8}>
+
+                        {
+                            sourceImg.length != 0 && <View>
+                                {
+                                    sourceImg.length == 1 ?
+                                        <Image source={{ uri: sourceImg[0].url }} style={{ width: deviceWidth / 3, height: deviceHeight * 0.13 }} />
+                                        :
+                                        sourceImg.length == 2 ?
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Image source={{ uri: sourceImg[0].url }} style={{ width: deviceWidth / 6, height: deviceHeight * 0.13 }} />
+                                                <Image source={{ uri: sourceImg[1].url }} style={{ width: deviceWidth / 6, height: deviceHeight * 0.13 }} />
+                                            </View>
+                                            :
+                                            <View>
+                                                <Image source={{ uri: sourceImg[0].url }} style={{ width: deviceWidth / 3, height: deviceHeight * 0.065 }} />
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Image source={{ uri: sourceImg[1].url }} style={{ width: deviceWidth / 6, height: deviceHeight * 0.065 }} />
+                                                    <Image source={{ uri: sourceImg[2].url }} style={[{ width: deviceWidth / 6, height: deviceHeight * 0.065 }]} />
+                                                </View>
+                                            </View>
+                                }
+                            </View>
+                        }
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View style={{ justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10 }}>
+                <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity style={styles.flexrow} onPress={onPressLike}>
+                        <FontAwesome5 name='thumbs-up' size={20} color={checklike ? 'blue' : 'grey'} style={{ paddingRight: 3 }} />
+                        <Text style={[styles.txt, checklike && { color: 'blue' }]}>Thích</Text>
+                    </TouchableOpacity>
+                    {like != 0 && <Text style={{ color: '#A0A4A8' }}> . {like} lượt thích</Text>}
+                </View>
+                {comment != 0 && <Text style={{ color: '#A0A4A8' }}>{comment} bình luận</Text>}
+            </View>
+        </View>
+    )
+}
+
 
 const styles = StyleSheet.create({
     header: {
@@ -105,12 +176,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flex: 1, justifyContent: 'space-around',
         height: 40,
-        borderBottomWidth: 0.5,
+
         borderTopWidth: 0.5,
-        borderBottomColor: 'grey',
-        borderTopColor: 'grey',
+
+        borderTopColor: '#CFE1ED',
         alignItems: 'center',
-        marginHorizontal: 15
+
     },
     txt: {
         color: 'grey'
