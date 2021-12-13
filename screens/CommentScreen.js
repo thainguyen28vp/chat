@@ -18,29 +18,20 @@ export default function CommentScreen({ route, navigation, user }) {
     useEffect(async () => {
         setLoadingdata(true);
         let data;
-        //console.log(route.params.uid, route.params.idPost);
-        data = await firestore().collection('Post').doc(route.params.uid).collection('posts').doc(route.params.idPost).get();
+        data = await firestore().collection('Post').doc(route.params.idPost).get();
         await setDataApost(data.data());
-        //await setDataIdApost(idPost);
-
-        //setvisibleModal(true);
         setLoadingdata(false);
         return () => {
 
         }
     }, [])
-    async function submitComment(idPost, uid) {
+    async function submitComment(idPost) {
         if (textSearch == '') return;
         setTextSearch('');
-        // setLoadingdata(true);
-        //  const data = await firestore().collection('Post').doc(uid).collection('posts').doc(idPost).get();
-        // let ar = data.data().comments.slice();
         let ar = dataApost.comments;
         ar.push({ uid: route.params.myUser.uid, image: route.params.myUser.image, name: route.params.myUser.name, comment: textSearch, createAt: new Date() });
         await firestore()
             .collection('Post')
-            .doc(uid)
-            .collection('posts')
             .doc(idPost)
             .update({
                 comments: ar
@@ -48,15 +39,13 @@ export default function CommentScreen({ route, navigation, user }) {
             .then(() => {
                 console.log('updated!');
             });
-        const dataAfter = await firestore().collection('Post').doc(uid).collection('posts').doc(idPost).get();
+        const dataAfter = await firestore().collection('Post').doc(idPost).get();
         setDataApost(dataAfter.data());
-        // setLoadingdata(false);
-
     }
     async function like() {
         let data = {}
         let ar = []
-        data = await firestore().collection('Post').doc(route.params.uid).collection('posts').doc(route.params.idPost).get();
+        data = await firestore().collection('Post').doc(route.params.idPost).get();
         ar = data.data().like;
         if (ar.includes(user.uid)) {
             const index = ar.indexOf(user.uid);
@@ -68,8 +57,6 @@ export default function CommentScreen({ route, navigation, user }) {
         }
         await firestore()
             .collection('Post')
-            .doc(route.params.uid)
-            .collection('posts')
             .doc(route.params.idPost)
             .update({
                 like: ar
@@ -78,8 +65,7 @@ export default function CommentScreen({ route, navigation, user }) {
                 console.log('updated!');
             });
         let datas;
-        //console.log(route.params.uid, route.params.idPost);
-        datas = await firestore().collection('Post').doc(route.params.uid).collection('posts').doc(route.params.idPost).get();
+        datas = await firestore().collection('Post').doc(route.params.idPost).get();
         setDataApost(datas.data());
     }
     return (
@@ -130,7 +116,7 @@ export default function CommentScreen({ route, navigation, user }) {
                             <TextInput style={{ width: '100%', marginLeft: 8 }} placeholder='bình luận...' onChangeText={setTextSearch} value={textSearch} />
                         </View>
                         <TouchableOpacity
-                            onPress={() => submitComment(route.params.idPost, route.params.uid)}
+                            onPress={() => submitComment(route.params.idPost)}
                         ><Text style={{ color: 'blue' }}>Gửi</Text></TouchableOpacity>
                     </View>
                 </View>

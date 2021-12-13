@@ -21,6 +21,7 @@ import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import ButtonCustom from '../components/ButtonCustom';
 import Toast from 'react-native-simple-toast';
+import { HeaderCustomBot } from './Admin/custom';
 
 const LoginSchema = Yup.object().shape({
     password: Yup.string()
@@ -62,18 +63,8 @@ export default function SignUp({ navigation, user }) {
     }
     return (
 
-        <>
-            <View style={styles.header}>
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={styles.iconHeader}>
-                    <FontAwesome5 name='angle-left' size={30} color='#000' />
-
-                </TouchableOpacity>
-                <View style={styles.sizeTextHeader}>
-                    <Text style={styles.textHeader}>Đăng ký</Text>
-                </View>
-            </View>
+        <View style={{ backgroundColor: '#fff', flex: 1 }}>
+            <HeaderCustomBot title='Đăng ký' back={() => navigation.pop()} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}
@@ -170,7 +161,7 @@ export default function SignUp({ navigation, user }) {
                     </View>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
-        </>
+        </View>
 
     );
 }

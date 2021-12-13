@@ -57,7 +57,7 @@ export const FormPost = ({ sourceImg, title, userName, avtImage, openImage, onPr
                 </TouchableOpacity>
             </View>
             <View style={{ justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
-                {like != 0 && <Text style={{ color: '#A0A4A8' }}>{like} lượt thích</Text>}
+                <Text style={{ color: '#A0A4A8' }}>{like != 0 && `${like} lượt thích`}</Text>
                 {commentLength != 0 && <Text style={{ color: '#A0A4A8' }}>{commentLength} bình luận</Text>}
             </View>
             <View style={styles.formlike}>

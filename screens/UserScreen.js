@@ -27,11 +27,13 @@ export default function UserScreen({ user, route, navigation }) {
     const [loadingData, setLoadingdata] = useState(false)
     const [textSearch, setTextSearch] = useState(false)
     const [dataIdPost, setDataIdApost] = useState(-1)
+    const [avt, setImageAVT] = useState('')
+    const [brg, setImageBRG] = useState('')
     const [dataApost, setDataApost] = useState({})
     let actionSheet = useRef();
 
 
-    useEffect(() => {
+    useEffect(async () => {
         fbUser.onSnapshot(res => {
             const users = [];
             for (let index = 0; index < res.docs.length; index++) {
@@ -41,10 +43,9 @@ export default function UserScreen({ user, route, navigation }) {
             setallUsers(users);
         });
         fbUser.doc(user.uid).onSnapshot(res => setmyUser(res.data()))
-        if (route?.params) {
-            firestore().collection('Post').doc(route?.params?.friend.uid).collection('posts').orderBy('createAt', "desc").onSnapshot(res => setPost(res.docs))
-        }
-        else firestore().collection('Post').doc(user.uid).collection('posts').orderBy('createAt', "desc").onSnapshot(res => setPost(res.docs))
+        await firestore().collection('Post').orderBy('createAt', "desc").onSnapshot(res => {
+            setPost(res.docs.filter(res => res.data().uid == user.uid))
+        })
 
     }, [])
     const showAction = (key) => {
@@ -271,11 +272,12 @@ export default function UserScreen({ user, route, navigation }) {
                 console.log('cancel');
             }
             else {
+                setImageAVT(response.assets[0].uri);
                 const uploadTask = storage().ref().child(`/userprofile/${Date.now()}`).putFile(response.assets[0].uri)
                 uploadTask.on('state_changed',
                     (snapshot) => {
                         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        if (progress == 100) alert('Sửa thành công')
+                        if (progress == 100) console.log('Sửa thành công')
                     },
                     (error) => {
                         alert("error uploading image")
@@ -299,11 +301,12 @@ export default function UserScreen({ user, route, navigation }) {
                 console.log('cancel');
             }
             else {
+                setImageBRG(response.assets[0].uri);
                 const uploadTask = storage().ref().child(`/userprofile/${Date.now()}`).putFile(response.assets[0].uri)
                 uploadTask.on('state_changed',
                     (snapshot) => {
                         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        if (progress == 100) alert('Sửa thành công')
+                        if (progress == 100) console.log('Sửa thành công')
                     },
                     (error) => {
                         alert("error uploading image")
@@ -320,10 +323,10 @@ export default function UserScreen({ user, route, navigation }) {
 
         })
     }
-    async function like(idPost, uid) {
+    async function like(idPost) {
         let data = {}
         let ar = []
-        data = await firestore().collection('Post').doc(uid).collection('posts').doc(idPost).get();
+        data = await firestore().collection('Post').doc(idPost).get();
         ar = data.data().like;
         if (ar.includes(user.uid)) {
             const index = ar.indexOf(user.uid);
@@ -335,8 +338,6 @@ export default function UserScreen({ user, route, navigation }) {
         }
         firestore()
             .collection('Post')
-            .doc(uid)
-            .collection('posts')
             .doc(idPost)
             .update({
                 like: ar
@@ -345,9 +346,9 @@ export default function UserScreen({ user, route, navigation }) {
                 console.log('updated!');
             });
     }
-    async function openComment(idPost, uid) {
+    async function openComment(idPost) {
 
-        navigation.navigate('commentScreen', { idPost, uid, myUser });
+        navigation.navigate('commentScreen', { idPost, myUser });
         //console.log(data.data());
     }
 
@@ -381,7 +382,7 @@ export default function UserScreen({ user, route, navigation }) {
                         :
                         <View style={styles.profileHcamera}>
                             <View>
-                                <Image source={{ uri: myUser.imageBackground }}
+                                <Image source={{ uri: brg != '' ? brg : myUser.imageBackground }}
                                     style={styles.backgroundImage} />
                                 <TouchableOpacity
                                     onPress={() => updateBackground()}
@@ -393,7 +394,7 @@ export default function UserScreen({ user, route, navigation }) {
                                 <View>
                                     <Image
                                         resizeMode={"cover"}
-                                        source={{ uri: myUser.image }}
+                                        source={{ uri: avt != '' ? avt : myUser.image }}
                                         style={styles.avtImage} />
                                     <TouchableOpacity
                                         onPress={() => updateAvt()}
@@ -569,14 +570,13 @@ export default function UserScreen({ user, route, navigation }) {
                         {
                             post.map(result => {
                                 if (result.data())
-                                    // console.log(result.id);
                                     return (
                                         <FormPost
                                             checklike={result.data().like.includes(user.uid)}
-                                            comment={() => openComment(result.id, route?.params?.friend?.uid ? route?.params?.friend.uid : user.uid)}
+                                            comment={() => openComment(result.id)}
                                             like={result.data().like.length}
                                             commentLength={result.data().comments.length}
-                                            onPressLike={() => like(result.id, route?.params?.friend?.uid ? route?.params?.friend.uid : user.uid)}
+                                            onPressLike={() => like(result.id)}
                                             sourceImg={result.data().image}
                                             userName={route?.params ? route?.params?.friend.name : myUser.name}
                                             title={result.data().title}
@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
     },
     profile: {
         borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
+        borderBottomColor: '#CFE1ED',
         marginBottom: 20
     },
     profileHcamera:

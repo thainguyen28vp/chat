@@ -1,0 +1,392 @@
+[
+    {
+        "id": 1,
+        "country_id": 238,
+        "name": "Tp. Hà Nội",
+        "cost": 0
+    },
+    {
+        "id": 2,
+        "country_id": 238,
+        "name": "Tp. Hồ Chí Minh",
+        "cost": 0
+    },
+    {
+        "id": 3,
+        "country_id": 238,
+        "name": "Đà Nẵng",
+        "cost": 0
+    },
+    {
+        "id": 4,
+        "country_id": 238,
+        "name": "Cần Thơ",
+        "cost": 0
+    },
+    {
+        "id": 5,
+        "country_id": 238,
+        "name": "Bình Dương",
+        "cost": 0
+    },
+    {
+        "id": 6,
+        "country_id": 238,
+        "name": "Cao Bằng",
+        "cost": 0
+    },
+    {
+        "id": 7,
+        "country_id": 238,
+        "name": "Đồng Nai",
+        "cost": 0
+    },
+    {
+        "id": 8,
+        "country_id": 238,
+        "name": "Bắc kạn",
+        "cost": 0
+    },
+    {
+        "id": 9,
+        "country_id": 238,
+        "name": "Khánh Hòa",
+        "cost": 0
+    },
+    {
+        "id": 10,
+        "country_id": 238,
+        "name": "Hà Giang",
+        "cost": 0
+    },
+    {
+        "id": 11,
+        "country_id": 238,
+        "name": "Hải Phòng",
+        "cost": 0
+    },
+    {
+        "id": 12,
+        "country_id": 238,
+        "name": "Lạng Sơn",
+        "cost": 0
+    },
+    {
+        "id": 13,
+        "country_id": 238,
+        "name": "Lai Châu",
+        "cost": 0
+    },
+    {
+        "id": 14,
+        "country_id": 238,
+        "name": "Long An",
+        "cost": 0
+    },
+    {
+        "id": 15,
+        "country_id": 238,
+        "name": "Quảng Nam",
+        "cost": 0
+    },
+    {
+        "id": 16,
+        "country_id": 238,
+        "name": "Điện Biên",
+        "cost": 0
+    },
+    {
+        "id": 17,
+        "country_id": 238,
+        "name": "Bà Rịa Vũng Tàu",
+        "cost": 0
+    },
+    {
+        "id": 18,
+        "country_id": 238,
+        "name": "Tuyên Quang",
+        "cost": 0
+    },
+    {
+        "id": 19,
+        "country_id": 238,
+        "name": "Yên Bái",
+        "cost": 0
+    },
+    {
+        "id": 20,
+        "country_id": 238,
+        "name": "Đắk Lắk",
+        "cost": 0
+    },
+    {
+        "id": 21,
+        "country_id": 238,
+        "name": "Bạc liêu",
+        "cost": 0
+    },
+    {
+        "id": 22,
+        "country_id": 238,
+        "name": "Cần Thơ",
+        "cost": 0
+    },
+    {
+        "id": 23,
+        "country_id": 238,
+        "name": "Sơn La",
+        "cost": 0
+    },
+    {
+        "id": 24,
+        "country_id": 238,
+        "name": "Hậu Giang",
+        "cost": 0
+    },
+    {
+        "id": 25,
+        "country_id": 238,
+        "name": "Bình Thuận",
+        "cost": 0
+    },
+    {
+        "id": 26,
+        "country_id": 238,
+        "name": "Trà Vinh",
+        "cost": 0
+    },
+    {
+        "id": 27,
+        "country_id": 238,
+        "name": "Lâm Đồng",
+        "cost": 0
+    },
+    {
+        "id": 28,
+        "country_id": 238,
+        "name": "Quảng Trị",
+        "cost": 0
+    },
+    {
+        "id": 29,
+        "country_id": 238,
+        "name": "Quảng Bình",
+        "cost": 0
+    },
+    {
+        "id": 30,
+        "country_id": 238,
+        "name": "Thừa Thiên Huế",
+        "cost": 0
+    },
+    {
+        "id": 31,
+        "country_id": 238,
+        "name": "Kon Tum",
+        "cost": 0
+    },
+    {
+        "id": 32,
+        "country_id": 238,
+        "name": "Kiên Giang",
+        "cost": 0
+    },
+    {
+        "id": 33,
+        "country_id": 238,
+        "name": "Sóc Trăng",
+        "cost": 0
+    },
+    {
+        "id": 34,
+        "country_id": 238,
+        "name": "Bắc Ninh",
+        "cost": 0
+    },
+    {
+        "id": 35,
+        "country_id": 238,
+        "name": "Đồng Tháp",
+        "cost": 0
+    },
+    {
+        "id": 36,
+        "country_id": 238,
+        "name": "Quảng Ninh",
+        "cost": 0
+    },
+    {
+        "id": 37,
+        "country_id": 238,
+        "name": "Hà Tĩnh",
+        "cost": 0
+    },
+    {
+        "id": 38,
+        "country_id": 238,
+        "name": "Thanh Hóa",
+        "cost": 0
+    },
+    {
+        "id": 39,
+        "country_id": 238,
+        "name": "Hà Nam",
+        "cost": 0
+    },
+    {
+        "id": 40,
+        "country_id": 238,
+        "name": "Nghệ An",
+        "cost": 0
+    },
+    {
+        "id": 41,
+        "country_id": 238,
+        "name": "Nghệ An",
+        "cost": 0
+    },
+    {
+        "id": 42,
+        "country_id": 238,
+        "name": "Hải Dương",
+        "cost": 0
+    },
+    {
+        "id": 43,
+        "country_id": 238,
+        "name": "Phú Yên",
+        "cost": 0
+    },
+    {
+        "id": 44,
+        "country_id": 238,
+        "name": "Gia Lai",
+        "cost": 0
+    },
+    {
+        "id": 45,
+        "country_id": 238,
+        "name": "Bình Phước",
+        "cost": 0
+    },
+    {
+        "id": 46,
+        "country_id": 238,
+        "name": "Hưng Yên",
+        "cost": 0
+    },
+    {
+        "id": 47,
+        "country_id": 238,
+        "name": "Bình Định",
+        "cost": 0
+    },
+    {
+        "id": 48,
+        "country_id": 238,
+        "name": "Ninh Thuận",
+        "cost": 0
+    },
+    {
+        "id": 49,
+        "country_id": 238,
+        "name": "Phú Thọ",
+        "cost": 0
+    },
+    {
+        "id": 50,
+        "country_id": 238,
+        "name": "Tiền Giang",
+        "cost": 0
+    },
+    {
+        "id": 51,
+        "country_id": 238,
+        "name": "Thái Bình",
+        "cost": 0
+    },
+    {
+        "id": 52,
+        "country_id": 238,
+        "name": "Bắc Giang",
+        "cost": 0
+    },
+    {
+        "id": 53,
+        "country_id": 238,
+        "name": "Hòa Bình",
+        "cost": 0
+    },
+    {
+        "id": 54,
+        "country_id": 238,
+        "name": "An Giang",
+        "cost": 0
+    },
+    {
+        "id": 55,
+        "country_id": 238,
+        "name": "Vĩnh Phúc",
+        "cost": 0
+    },
+    {
+        "id": 56,
+        "country_id": 238,
+        "name": "Tây Ninh",
+        "cost": 0
+    },
+    {
+        "id": 57,
+        "country_id": 238,
+        "name": "Thái Nguyên",
+        "cost": 0
+    },
+    {
+        "id": 58,
+        "country_id": 238,
+        "name": "Lào Cai",
+        "cost": 0
+    },
+    {
+        "id": 59,
+        "country_id": 238,
+        "name": "Nam Định",
+        "cost": 0
+    },
+    {
+        "id": 60,
+        "country_id": 238,
+        "name": "Quảng Ngãi",
+        "cost": 0
+    },
+    {
+        "id": 61,
+        "country_id": 238,
+        "name": "Bến Tre",
+        "cost": 0
+    },
+    {
+        "id": 62,
+        "country_id": 238,
+        "name": "Đắk Nông",
+        "cost": 0
+    },
+    {
+        "id": 63,
+        "country_id": 238,
+        "name": "Cà Mau",
+        "cost": 0
+    },
+    {
+        "id": 64,
+        "country_id": 238,
+        "name": "Vĩnh Long",
+        "cost": 0
+    },
+    {
+        "id": 65,
+        "country_id": 238,
+        "name": "Ninh Bình",
+        "cost": 0
+    }
+]

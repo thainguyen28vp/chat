@@ -15,23 +15,18 @@ import {
     ActivityIndicator
 } from 'react-native';
 import { Formik } from 'formik';
-import auth from '@react-native-firebase/auth'
+import auth, { firebase } from '@react-native-firebase/auth'
 import * as Yup from 'yup';
 import InputCustom from '../components/InputCustom';
 import ButtonCustom from '../components/ButtonCustom';
 import Toast from 'react-native-simple-toast';
+import { ModalLoading1 } from '../components/Loaing1';
 const LoginSchema = Yup.object().shape({
     password: Yup.string().required(''),
     email: Yup.string().required(''),
 });
 export default function Login({ navigation }) {
     const [loading, setLoading] = useState(false)
-    if (loading) {
-        return <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-            <ActivityIndicator size="large" color='skyblue' />
-            <Text>Đăng đăng nhập</Text>
-        </View>
-    }
     async function SignIn(values) {
         setLoading(true)
         try {
@@ -96,7 +91,7 @@ export default function Login({ navigation }) {
                                         ) : null}
                                     </View>
                                     <View>
-                                        <TouchableOpacity>
+                                        <TouchableOpacity onPress={() => navigation.navigate('forgotPass')}>
                                             <Text style={styles.forgotPass}>Quên mật khẩu?</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -139,7 +134,9 @@ export default function Login({ navigation }) {
                             </TouchableOpacity>
                         </View>
                     </View>
+                    <ModalLoading1 visible={loading} />
                 </View>
+
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
     );

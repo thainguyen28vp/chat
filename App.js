@@ -42,6 +42,7 @@ import Canceled from './screens/Admin/Canceled';
 import Approved from './screens/Admin/Approved';
 import CommentScreen from './screens/CommentScreen';
 import { UpdateProfile } from './screens/UpdateProfile';
+import ForgotPass from './screens/ForgotPass';
 
 const Stack = createStackNavigator();
 
@@ -66,7 +67,7 @@ const Navigation = () => {
   useEffect(() => {
     setTimeout(() => {
       RNBootSplash.hide();
-    }, 600);
+    }, 1000);
     const unregister = auth().onAuthStateChanged(userExist => {
       if (userExist) {
         messaging().getToken().then(token => {
@@ -181,6 +182,7 @@ const Navigation = () => {
             <Stack.Screen name="canceled" component={Canceled} options={{ headerShown: false }} />
             <Stack.Screen name="approved" component={Approved} options={{ headerShown: false }} />
             <Stack.Screen name="logIn" component={Login} options={{ headerShown: false }} />
+            <Stack.Screen name="forgotPass" component={ForgotPass} options={{ headerShown: false }} />
             <Stack.Screen name="signIn" component={SignUp} options={{ headerShown: false }} />
 
           </>
