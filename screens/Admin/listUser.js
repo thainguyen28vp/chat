@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions, ScrollView, StatusBar } from 'react-native'
 import { deviceWidth, HeaderCustomBot } from './custom';
 import { Ic_cong, Ic_goto, Ic_search, Ic_thongke } from './iconSVG'
 import { ModalSignup } from './modal';
+import moment from 'moment'
 import firestore from '@react-native-firebase/firestore'
 const screenWidth = Dimensions.get("window").width;
 import {
@@ -14,6 +15,7 @@ import {
     StackedBarChart
 } from "react-native-chart-kit";
 import { ModalLoading } from '../../components/Loading';
+import { data } from 'browserslist';
 export default function ListUser({ navigation }) {
 
 
@@ -21,19 +23,35 @@ export default function ListUser({ navigation }) {
     const [hide, setHide] = useState(false)
     const [datauser, setdatau] = useState([])
     const [loading, setLoading] = useState(true)
+    const [thongke, setthongke] = useState([])
+    const [ngay, setngay] = useState([])
+
     useEffect(async () => {
         // firestore().collection('users').get().then(data => {
         //     // setdata(docSnap.data())
         //     console.log('data', data.data())
-        const data = await firestore().collection('users').get()
-
+        const data = await firestore().collection('users').where('decentralization', '==', 0).get()
         const allusers = data.docs.map(res => res.data())
         await setdatau(allusers)
         setLoading(false);
-    })
+    }, [])
+    function thongketg() {
+        setHide(!hide)
+        let check = []
+        let ngay = []
+        let a = [6, 5, 4, 3, 2, 1, 0]
+        a.map((res) => {
+            const data = datauser.filter(res1 => moment(res1.createdAt).format('DDMMYYYY') == moment(Date.now() - res * 24 * 3600 * 1000).format('DDMMYYYY'))
+            check.push(data.length)
+            ngay.push(moment(Date.now() - res * 24 * 3600 * 1000).format('DD/MM'))
+        })
+        setthongke(check)
+        setngay(ngay)
+        console.log(ngay, check)
+    }
     const Form = ({ item }) => {
         return <TouchableOpacity
-            onPress={() => navigation.navigate('detailUser', item.uid)}
+            onPress={() => navigation.navigate('detailUser', item)}
             style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#CFE1ED', paddingVertical: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Image source={{ uri: item.image }} style={{ width: 60, height: 60, borderRadius: 30 }} />
@@ -53,10 +71,10 @@ export default function ListUser({ navigation }) {
         </TouchableOpacity>
     }
     const data = {
-        labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
+        labels: ngay,
         datasets: [
             {
-                data: [10, 30, 50, 60, 80, 90, 100],
+                data: thongke,
                 color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
                 strokeWidth: 2 // optional
             }
@@ -67,7 +85,10 @@ export default function ListUser({ navigation }) {
         <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ flex: 1, backgroundColor: '#fff' }}>
-            <HeaderCustomBot title='Danh sách người dùng' back={() => navigation.pop()} />
+            <StatusBar barStyle='dark-content' />
+            <View style={{ paddingTop: StatusBar.currentHeight }}>
+                <HeaderCustomBot title='Danh sách người dùng' back={() => navigation.pop()} />
+            </View>
             <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', paddingHorizontal: 16 }}>
                 <View style={{ flexDirection: 'row', width: screenWidth - 32, alignItems: 'center', marginTop: 20, backgroundColor: '#F3F7F9', marginBottom: 24, height: 36, borderRadius: 10, }}>
                     <Ic_search />
@@ -85,7 +106,7 @@ export default function ListUser({ navigation }) {
 
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => setHide(!hide)}
+                    onPress={() => thongketg()}
                     style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#8EA0AB', height: 50, paddingHorizontal: 10, borderRadius: 5 }}>
                     <Ic_thongke />
                     <Text style={{ fontSize: 16, color: '#2F80ED', marginLeft: 10, fontWeight: 'bold' }}>

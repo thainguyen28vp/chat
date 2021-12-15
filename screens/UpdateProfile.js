@@ -8,6 +8,7 @@ import { Ic_active } from './Admin/iconSVG';
 import { ModalDateTime } from './Admin/modal';
 import firestore from '@react-native-firebase/firestore'
 import moment from 'moment';
+import SimpleToast from 'react-native-simple-toast';
 export function UpdateProfile({ user, navigation }) {
     const [check, setCheck] = useState(false);
     const [sdt, setSDT] = useState('');
@@ -38,6 +39,7 @@ export function UpdateProfile({ user, navigation }) {
             hocvan
         })
         navigation.pop();
+        SimpleToast.show('Cập nhật thông tin thành công.', SimpleToast.LONG);
 
     }
     function changText(txt) {

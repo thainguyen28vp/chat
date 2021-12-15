@@ -6,6 +6,8 @@ import firestore from '@react-native-firebase/firestore'
 import storage from '@react-native-firebase/storage'
 import { Alert } from 'react-native';
 import { ModalLoading } from '../components/Loading';
+import { Ic_back } from './Admin/iconSVG';
+import SimpleToast from 'react-native-simple-toast';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -85,6 +87,7 @@ export default function NewPost({ navigation, user, route }) {
                         });
                         await setloading(false);
                         navigation.pop();
+                        SimpleToast.show('Vui lòng chờ admin phê duyệt bài đăng.', SimpleToast.LONG);
                     }
                 );
             })
@@ -103,21 +106,9 @@ export default function NewPost({ navigation, user, route }) {
                 comments: []
             });
             navigation.pop();
+            SimpleToast.show('Vui lòng chờ admin phê duyệt bài đăng.', SimpleToast.LONG);
         }
-        // console.log(images);
-        // setTimeout(() => {
-        //     console.log(images);
-        // }, 5000);
-        // setTimeout(() => {
 
-        // }, 2000);
-        // firestore().collection('Post').doc(user.uid).update({ image: [] })
-        // navigation.pop();
-        // firestore().collection('Post').doc(user.uid).update({ image: [] })
-        // if (datas?.image) Image.getSize(datas?.image, (width, height) => {
-        //     console.log(width, height);
-        // })
-        //
     }
     function deleteImage(index) {
         //alert(index);
@@ -133,7 +124,7 @@ export default function NewPost({ navigation, user, route }) {
                 <View style={styles.header}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => goback()} style={{ padding: 5 }}>
-                            <FontAwesome5 name='arrow-left' size={24} />
+                            <Ic_back />
                         </TouchableOpacity>
                         <Text style={{ fontSize: 18, paddingLeft: 10 }}>Tạo bài viết</Text>
                     </View>

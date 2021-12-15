@@ -44,7 +44,7 @@ export default function UserScreen({ user, route, navigation }) {
         });
         fbUser.doc(user.uid).onSnapshot(res => setmyUser(res.data()))
         await firestore().collection('Post').orderBy('createAt', "desc").onSnapshot(res => {
-            setPost(res.docs.filter(res => res.data().uid == user.uid))
+            setPost(res.docs.filter(res => res.data().uid == user.uid && res.data().status == 2))
         })
 
     }, [])

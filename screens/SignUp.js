@@ -23,6 +23,7 @@ import ButtonCustom from '../components/ButtonCustom';
 import Toast from 'react-native-simple-toast';
 import { HeaderCustomBot } from './Admin/custom';
 
+
 const LoginSchema = Yup.object().shape({
     password: Yup.string()
         .min(6, 'Mật khẩu tối thiểu 6 ký tự!')
@@ -39,19 +40,22 @@ export default function SignUp({ navigation, user }) {
     async function Signup(values) {
         try {
             const result = await auth().createUserWithEmailAndPassword(values.email, values.password)
-            firestore().collection('users').doc(result.user.uid).set({
+            await firestore().collection('users').doc(result.user.uid).set({
                 name: values.userName,
                 email: result.user.email,
                 uid: result.user.uid,
                 image: "https://apsec.iafor.org/wp-content/uploads/sites/37/2017/02/IAFOR-Blank-Avatar-Image.jpg",
-                imageBackground: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8WO4fi_amn8WsyA3FYwQTLn8rlK8dNy8oUg&usqp=CAU',
+                imageBackground: 'https://i.pinimg.com/originals/38/6f/47/386f47c88a7aaa497ec6edc1c02cc9b6.jpg',
                 status: "online",
                 friendAwait: [],
                 friendRequest: [],
                 listFriends: [],
-                HistorySearch: []
+                HistorySearch: [],
+                createdAt: new Date().toString(),
+                decentralization: 0
             })
-            firestore().collection('Post').doc(result.user.uid).set({ image: [] })
+            Toast.show('Đăng ký thành công.', Toast.LONG);
+            navigation.pop();
 
         } catch (error) {
             if (error.code == 'auth/email-already-in-use') Toast.show('Địa chỉ email đã tồn tại.', Toast.LONG)
@@ -63,7 +67,8 @@ export default function SignUp({ navigation, user }) {
     }
     return (
 
-        <View style={{ backgroundColor: '#fff', flex: 1 }}>
+        <>
+
             <HeaderCustomBot title='Đăng ký' back={() => navigation.pop()} />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -161,7 +166,7 @@ export default function SignUp({ navigation, user }) {
                     </View>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
-        </View>
+        </>
 
     );
 }

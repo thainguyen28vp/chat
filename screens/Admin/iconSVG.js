@@ -98,6 +98,41 @@ export const Ic_cong = (props) => (
     </Svg>
 );
 
+export const Ic_dx = (props) => (
+    <Svg
+        width={70}
+        height={70}
+        viewBox="0 0 90 90"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
+    >
+        <Path
+            d="M15 63.75V71.25C15 73.2391 15.7902 75.1468 17.1967 76.5533C18.6032 77.9598 20.5109 78.75 22.5 78.75H67.5C69.4891 78.75 71.3968 77.9598 72.8033 76.5533C74.2098 75.1468 75 73.2391 75 71.25V63.75"
+            stroke="#D1D1D1"
+            strokeOpacity={0.5}
+            strokeWidth={9}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+        <Path
+            d="M26.25 33.75L45 15L63.75 33.75"
+            stroke="#D1D1D1"
+            strokeOpacity={0.5}
+            strokeWidth={9}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+        <Path
+            d="M45 15V60"
+            stroke="#D1D1D1"
+            strokeOpacity={0.5}
+            strokeWidth={9}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </Svg>
+);
 
 
 export const Ic_thongke = (props) => (

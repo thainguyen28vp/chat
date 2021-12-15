@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions, ScrollView, RefreshControl } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions, ScrollView, RefreshControl, StatusBar } from 'react-native'
 import { deviceWidth, Form, HeaderCustomBot } from './custom';
 import { Ic_cong, Ic_duyet, Ic_goto, Ic_Kduyet, Ic_search, Ic_thongke } from './iconSVG'
 import { ModalSignup } from './modal';
@@ -15,7 +15,7 @@ import {
 } from "react-native-chart-kit";
 import { ModalLoading } from '../../components/Loading';
 import { FlatList } from 'react-native-gesture-handler';
-export default function Approved({ navigation }) {
+export default function Approved({ navigation, route }) {
     const [visible, setVisible] = useState(false)
     const [datapost, setdatap] = useState([]);
     const [loading, setLoading] = useState(true)
@@ -23,36 +23,29 @@ export default function Approved({ navigation }) {
 
 
     useEffect(() => {
+        console.log(route?.params?.reload)
         reload()
-    }, [])
+
+    }, [route?.params?.reload])
+
     async function reload() {
-        await firestore()
-            .collection('Post')
-            .get()
-            .then(docs => {
-                let data1 = [];
-                let data2 = []
-                docs.forEach(async doc => {
 
-                    const post = await firestore().collection('Post').doc(doc.id).collection('posts').where('status', '==', 2).get()
-                    const allposts = post.docs.map(res => res.data())
-                    post.docs.forEach(doc2 => {
-                        let id = doc2.id
-                        let data = doc2.data()
-                        const dtpost = { id, data }
-                        data1.push(dtpost)
-                    })
+        const post = await firestore().collection('Post').where('status', '==', 2).get()
+        // const allposts = post.docs.map(res => res.data())
+        // console.log(post.docs)
+        setdatap(post.docs)
+        setTimeout(async () => {
+            setLoadingRef(false)
+            setLoading(false);
+        }, 1000)
 
-                })
-                setTimeout(async () => {
-                    await setdatap(data1)
-                    setLoading(false);
-                }, 1000)
-            })
-            .catch(err => console.log(err))
+
     }
 
-
+    function back() {
+        const radom = Math.floor(Math.random() * 10000)
+        navigation.navigate('listPost', { reload: radom })
+    }
 
     async function refresh() {
         setLoadingRef(true);
@@ -62,19 +55,13 @@ export default function Approved({ navigation }) {
     return (
         <View
             style={{ flex: 1, backgroundColor: '#fff' }}>
-
-            {/* <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 8 }}>
-                {
-                    datapost.map(res => {
-                        return <View style={{ width: '50%', padding: 8 }}>
-                            <Form item={res} />
-                        </View>
-                    })
-                }
-            </View> */}
+            <StatusBar barStyle='dark-content' />
             <FlatList
                 ListHeaderComponent={() => <View>
-                    <HeaderCustomBot title='Bài đăng đã duyệt' back={() => navigation.pop()} />
+                    <View style={{ paddingTop: StatusBar.currentHeight }}>
+
+                        <HeaderCustomBot title='Bài đăng đã duyệt' back={() => back()} />
+                    </View>
                     <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', paddingHorizontal: 16 }}>
                         <View style={{ flexDirection: 'row', width: screenWidth - 32, alignItems: 'center', marginTop: 20, backgroundColor: '#F3F7F9', marginBottom: 24, height: 36, borderRadius: 10, }}>
                             <Ic_search />
@@ -83,8 +70,9 @@ export default function Approved({ navigation }) {
                     </View>
                 </View>}
                 numColumns={2}
+                columnWrapperStyle={{ justifyContent: 'space-between' }}
                 data={datapost}
-                renderItem={({ item }) => <Form item={item} onPress={() => navigation.navigate('detailPost', item)} />}
+                renderItem={({ item }) => <Form item={item.data()} onPress={() => navigation.navigate('detailPost', { check: 2, data: item.data(), id: item.id })} />}
                 keyExtractor={(item, index) => index.toString()}
                 refreshControl={
                     <RefreshControl refreshing={loadingRef} onRefresh={() => refresh()} />

@@ -42,6 +42,7 @@ import Canceled from './screens/Admin/Canceled';
 import Approved from './screens/Admin/Approved';
 import CommentScreen from './screens/CommentScreen';
 import { UpdateProfile } from './screens/UpdateProfile';
+import ListAdmin from './screens/Admin/listAdmin';
 import ForgotPass from './screens/ForgotPass';
 
 const Stack = createStackNavigator();
@@ -67,7 +68,7 @@ const Navigation = () => {
   useEffect(() => {
     setTimeout(() => {
       RNBootSplash.hide();
-    }, 1000);
+    }, 3000);
     const unregister = auth().onAuthStateChanged(userExist => {
       if (userExist) {
         messaging().getToken().then(token => {
@@ -78,9 +79,12 @@ const Navigation = () => {
               fcm: token
             })
         })
-        setuser(userExist)
-
-
+        firestore().collection('users')
+          .doc(userExist.uid)
+          .get().then(res => {
+            console.log(res.data())
+            setuser(res.data())
+          })
       }
 
       else setuser("")
@@ -103,87 +107,97 @@ const Navigation = () => {
       >
         {user ?
           <>
-            <Stack.Screen name="Tab"
-              options={{
-                headerShown: false
+            {
+              user.decentralization == 0 ?
+                <>
+                  <Stack.Screen name="Tab"
+                    options={{
+                      headerShown: false
 
-              }}>
-              {props => <TabNavigation {...props} user={user} />}
-            </Stack.Screen>
+                    }}>
+                    {props => <TabNavigation {...props} user={user} />}
+                  </Stack.Screen>
 
+                  <Stack.Screen name="chat"
+                    options={{
+                      headerShown: false
 
-            <Stack.Screen name="chat"
-              options={{
-                headerShown: false
+                    }}>
+                    {props => <Chat {...props} user={user} />}
+                  </Stack.Screen>
 
-              }}>
-              {props => <Chat {...props} user={user} />}
-            </Stack.Screen>
-            <Stack.Screen name="account"
-              options={{
-                headerShown: false,
-                gestureEnabled: true,
-                cardOverlayEnabled: true,
-                ...TransitionPresets.ModalPresentationIOS,
-              }}
-              mode="modal"
-            >
-              {props => <MyUser {...props} user={user} />}
-            </Stack.Screen>
-            <Stack.Screen name="header" >
-              {props => <HeaderHome {...props} user={user} />}
-            </Stack.Screen>
-            <Stack.Screen name="SearchUser">
-              {props => <SearchUser {...props} user={user} />}
-            </Stack.Screen>
-            <Stack.Screen name="UserScreen">
-              {props => <UserScreen {...props} user={user} />}
-            </Stack.Screen>
-            <Stack.Screen name="UpdateProfile">
-              {props => <UpdateProfile {...props} user={user} />}
-            </Stack.Screen>
-            <Stack.Screen name="commentScreen">
-              {props => <CommentScreen {...props} user={user} />}
-            </Stack.Screen>
-            <Stack.Screen name="NewPost">
-              {props => <NewPost {...props} user={user} />}
-            </Stack.Screen>
-            <Stack.Screen name="SearchFriend" component={SearchFriend} options={{ headerShown: false }} />
-            <Stack.Screen mode="modal" name="FriendAwait" component={FriendAwaitScreen}
-              options={{
-                headerShown: false,
-                gestureEnabled: true,
-                cardOverlayEnabled: true,
-                ...TransitionPresets.ModalPresentationIOS,
-              }} />
-            <Stack.Screen name="addgroupchat"
-              options={{
-                headerShown: false,
-                gestureEnabled: true,
-                cardOverlayEnabled: true,
-                ...TransitionPresets.ModalPresentationIOS,
-              }}
-              mode="modal">
-              {props => <Addgroupchat {...props} user={user} />}
-            </Stack.Screen>
+                  <Stack.Screen name="account"
+                    options={{
+                      headerShown: false,
+                      gestureEnabled: true,
+                      cardOverlayEnabled: true,
+                      ...TransitionPresets.ModalPresentationIOS,
+                    }}
+                    mode="modal"
+                  >
+                    {props => <MyUser {...props} user={user} />}
+                  </Stack.Screen>
+                  <Stack.Screen name="header" >
+                    {props => <HeaderHome {...props} user={user} />}
+                  </Stack.Screen>
+                  <Stack.Screen name="SearchUser">
+                    {props => <SearchUser {...props} user={user} />}
+                  </Stack.Screen>
+                  <Stack.Screen name="UserScreen">
+                    {props => <UserScreen {...props} user={user} />}
+                  </Stack.Screen>
+                  <Stack.Screen name="UpdateProfile">
+                    {props => <UpdateProfile {...props} user={user} />}
+                  </Stack.Screen>
+                  <Stack.Screen name="commentScreen">
+                    {props => <CommentScreen {...props} user={user} />}
+                  </Stack.Screen>
+                  <Stack.Screen name="NewPost">
+                    {props => <NewPost {...props} user={user} />}
+                  </Stack.Screen>
+                  <Stack.Screen name="SearchFriend" component={SearchFriend} options={{ headerShown: false }} />
+                  <Stack.Screen mode="modal" name="FriendAwait" component={FriendAwaitScreen}
+                    options={{
+                      headerShown: false,
+                      gestureEnabled: true,
+                      cardOverlayEnabled: true,
+                      ...TransitionPresets.ModalPresentationIOS,
+                    }} />
+                  <Stack.Screen name="addgroupchat"
+                    options={{
+                      headerShown: false,
+                      gestureEnabled: true,
+                      cardOverlayEnabled: true,
+                      ...TransitionPresets.ModalPresentationIOS,
+                    }}
+                    mode="modal">
+                    {props => <Addgroupchat {...props} user={user} />}
+                  </Stack.Screen>
+                </>
+                :
+                <>
+                  <Stack.Screen name="admin"
+                    options={{ headerShown: false }} >
+                    {props => <Admin {...props} user={user} />}
+                  </Stack.Screen>
+                  <Stack.Screen name="detailUser" component={DetailUser} options={{ headerShown: false }} />
+                  <Stack.Screen name="detailPost" component={DetailPost} options={{ headerShown: false }} />
+                  <Stack.Screen name="listUser" component={ListUser} options={{ headerShown: false }} />
 
-
-
-
+                  <Stack.Screen name="listAdmin" component={ListAdmin} options={{ headerShown: false }} />
+                  <Stack.Screen name="listPost" component={ListPost} options={{ headerShown: false }} />
+                  <Stack.Screen name="pending" component={Pending} options={{ headerShown: false }} />
+                  <Stack.Screen name="canceled" component={Canceled} options={{ headerShown: false }} />
+                  <Stack.Screen name="approved" component={Approved} options={{ headerShown: false }} /></>
+            }
           </>
           :
+
           <>
-            <Stack.Screen name="admin" component={Admin} options={{ headerShown: false }} />
-            <Stack.Screen name="detailUser" component={DetailUser} options={{ headerShown: false }} />
-            <Stack.Screen name="detailPost" component={DetailPost} options={{ headerShown: false }} />
-            <Stack.Screen name="listUser" component={ListUser} options={{ headerShown: false }} />
-            <Stack.Screen name="listPost" component={ListPost} options={{ headerShown: false }} />
-            <Stack.Screen name="pending" component={Pending} options={{ headerShown: false }} />
-            <Stack.Screen name="canceled" component={Canceled} options={{ headerShown: false }} />
-            <Stack.Screen name="approved" component={Approved} options={{ headerShown: false }} />
+
             <Stack.Screen name="logIn" component={Login} options={{ headerShown: false }} />
-            <Stack.Screen name="forgotPass" component={ForgotPass} options={{ headerShown: false }} />
             <Stack.Screen name="signIn" component={SignUp} options={{ headerShown: false }} />
+            <Stack.Screen name="forgotPass" component={ForgotPass} options={{ headerShown: false }} />
 
           </>
         }

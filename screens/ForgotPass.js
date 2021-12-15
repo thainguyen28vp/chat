@@ -9,9 +9,9 @@ import Toast from 'react-native-simple-toast';
 export default function ForgotPass({ navigation }) {
     const [txt, setTxt] = useState('');
     function handleSubmit() {
-        auth().sendPasswordResetEmail('thai2kvsvtvp@gmail.com').then(() => {
+        auth().sendPasswordResetEmail(txt).then(() => {
             Toast.show('Đã gửi email. Vui lòng vào email đặt lại mật khẩu', Toast.LONG);
-        }).catch((e) => console.log(e))
+        }).catch((e) => Toast.show('Email không đúng định dạng hoặc không tồn tại.', Toast.LONG))
     }
     return (
         <View style={{ backgroundColor: '#fff', flex: 1 }}>

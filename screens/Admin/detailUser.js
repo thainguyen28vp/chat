@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, Image, View, ScrollView } from 'react-native'
+import { StyleSheet, Text, Image, View, ScrollView, StatusBar } from 'react-native'
 import ButtonCustom from '../../components/ButtonCustom'
 import UserOnline from '../../components/UserOnline'
 import { HeaderCustomBot } from './custom'
@@ -9,24 +9,29 @@ import firestore from '@react-native-firebase/firestore'
 export default function DetailUser({ navigation, route }) {
     const [details, setdetails] = useState([])
     useEffect(async () => {
+        console.log(route.params)
 
-        const data = await firestore().collection('users').where('uid', '==', route.params).get()
+        // const data = await firestore().collection('users').where('uid', '==', route.params).get()
 
-        const user = data.docs.map(res => res.data())
-        setdetails(user)
+        // const user = data.docs.map(res => res.data())
+        // setdetails(user)
 
     })
 
     return (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
-            <HeaderCustomBot title={details[0]?.name} back={() => navigation.pop()} />
+            <StatusBar barStyle='dark-content' />
+            <View style={{ paddingTop: StatusBar.currentHeight }}>
+
+                <HeaderCustomBot title={route.params.name} back={() => navigation.pop()} />
+            </View>
             <View style={{ borderBottomEndRadius: 10, backgroundColor: '#99BEFF', borderBottomStartRadius: 10, flexDirection: 'row', justifyContent: 'center', paddingVertical: 16 }}>
-                <Image source={{ uri: details[0]?.image }} style={{ width: 100, height: 100, borderRadius: 50 }} />
+                <Image source={{ uri: route.params.image }} style={{ width: 100, height: 100, borderRadius: 50 }} />
                 <View style={{ marginHorizontal: 15 }}></View>
                 <View style={{}}>
-                    <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#fff' }}>{details[0]?.name}</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{details[0]?.email}</Text>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#fff' }}>Vĩnh Phúc</Text>
+                    <Text style={{ fontSize: 28, fontWeight: 'bold', color: '#fff' }}>{route.params.name}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff' }}>{route.params.email}</Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#fff' }}>{route?.params?.quequan ? route?.params?.quequan : 'chưa có thông tin'}</Text>
 
                 </View>
             </View>
@@ -35,38 +40,44 @@ export default function DetailUser({ navigation, route }) {
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                     <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Họ và tên : </Text>
-                    <Text style={{ fontSize: 16, color: '#000', }}>Nguyễn Văn Thái</Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}>{route.params.name}</Text>
+
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                     <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Ngày sinh : </Text>
-                    <Text style={{ fontSize: 16, color: '#000', }}>01-01-1999</Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}>{route?.params?.birtday ? route?.params?.birtday : 'chưa có thông tin'}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                     <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Quê quán : </Text>
-                    <Text style={{ fontSize: 16, color: '#000', }}>Vĩnh phúc</Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}>{route?.params?.quequan ? route?.params?.quequan : 'chưa có thông tin'}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                     <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Học vấn : </Text>
-                    <Text style={{ fontSize: 16, color: '#000', }}>THPT Vĩnh Tường</Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}> {route?.params?.hocvan ? route?.params?.hocvan : 'chưa có thông tin'}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
+
+                    <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Tình trạng hôn nhân : </Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}> {route?.params?.TTHN ? route?.params?.TTHN : 'chưa có thông tin'}</Text>
                 </View>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000', marginVertical: 16 }}>Bạn bè</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                     <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Bạn bè : </Text>
-                    <Text style={{ fontSize: 16, color: '#000', }}>{details[0]?.listFriends.length} người</Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}>{route.params.listFriends.length} người</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                     <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Yêu cầu kết bạn : </Text>
-                    <Text style={{ fontSize: 16, color: '#000', }}>{details[0]?.friendAwait.length} yêu cầu</Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}>{route.params.friendAwait.length} yêu cầu</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                     <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Lời mời kết bạn : </Text>
-                    <Text style={{ fontSize: 16, color: '#000', }}>{details[0]?.friendRequest.length} lời mời</Text>
+                    <Text style={{ fontSize: 16, color: '#000', }}>{route.params.friendRequest.length} lời mời</Text>
                 </View>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000', marginVertical: 20 }}>Lịch sử tìm kiếm</Text>
 

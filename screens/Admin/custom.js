@@ -14,7 +14,7 @@ export const CustomInput = (props) => {
     return <TextInput style={{ width: '100%', marginBottom: 24, backgroundColor: '#F3F7F9', height: 56, paddingLeft: 16, borderRadius: 10, fontSize: 16 }} keyboardType={props.keyboardType ? props.keyboardType : 'default'} placeholder={props.placeholder} onChangeText={props.onChangeText} value={props.value} />
 }
 export const HeaderCustomBot = (props) => {
-    return <View style={{ marginTop: StatusBar.currentHeight, flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#CFE1ED', }}>
+    return <View style={{ backgroundColor: '#fff', flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#CFE1ED', }}>
 
         <Text style={{ letterSpacing: -0.408, fontSize: 18, lineHeight: 22, fontFamily: 'SVN-Poppins', color: '#1A1A1A' }}>{props.title}</Text>
         <TouchableOpacity style={{ position: 'absolute', left: 15, top: 15, }}
@@ -43,17 +43,17 @@ export const Form = (props) => {
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
             <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Người đăng : </Text>
-            <Text style={{ fontSize: 16, color: '#000', }}>{props.item?.data?.name}</Text>
+            <Text style={{ fontSize: 16, color: '#000', }}>{props.item?.name}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
             <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Nội dung : </Text>
-            <Text numberOfLines={1} style={{ fontSize: 16, color: '#000', width: (deviceWidth - 100) / 3 }}>{props.item?.data?.title}</Text>
+            <Text numberOfLines={1} style={{ fontSize: 16, color: '#000', width: (deviceWidth - 100) / 3 }}>{props.item?.title}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
             <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Số lượng ảnh : </Text>
-            <Text style={{ fontSize: 16, color: '#000', }}>{props.item?.data?.image.length}</Text>
+            <Text style={{ fontSize: 16, color: '#000', }}>{props.item?.image.length}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 

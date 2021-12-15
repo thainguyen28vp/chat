@@ -21,11 +21,11 @@ export const ModalSignup = (props) => {
         style={{ justifyContent: 'center' }}>
         <View style={{ backgroundColor: '#FFF', borderRadius: 10, justifyContent: 'center', alignItems: 'center', paddingLeft: 16, paddingRight: 16 }}>
             <Text style={{ lineHeight: 24, paddingBottom: 20, paddingTop: 20, fontFamily: 'SVN-Poppins', fontWeight: 'bold', letterSpacing: -0.3, color: '#1A1A1A', fontSize: 22, }}>Đăng ký người dùng</Text>
-            <CustomInput value={props.userName} placeholder='Nhập tài khoản ...' />
-            <CustomInput value={props.password} placeholder='Nhập mật khẩu ...' />
-            <CustomInput value={props.confirm} placeholder='Nhập lại mật khẩu ...' />
+            <CustomInput value={props.userName} placeholder='Nhập email ...' onChangeText={props.onChangeTextTK} />
+            <CustomInput value={props.hovaten} placeholder='Nhập họ và tên ...' onChangeText={props.onChangeTextHT} />
+            <CustomInput value={props.password} placeholder='Nhập mật khẩu ...' onChangeText={props.onChangeTextMK} />
             <View style={{ width: '100%', paddingBottom: 15 }}>
-                <ButtonCustom textButton='ĐĂNG KÝ' disabled={false} opacity={1} onPress={() => alert('Hi')} />
+                <ButtonCustom textButton='ĐĂNG KÝ' disabled={false} opacity={1} onPress={props.signUp} />
 
             </View>
         </View>

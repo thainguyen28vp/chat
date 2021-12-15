@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Image, ScrollView } from 'react-native'
 import SearchInput from '../components/SearchInput';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { HeaderCustomBot } from './Admin/custom';
 const width = Dimensions.get('window').width;
 
 const SearchFriend = ({ route, navigation }) => {
@@ -88,12 +89,8 @@ const SearchFriend = ({ route, navigation }) => {
     }
     return (
         <View style={{ flex: 1 }}>
-            <View style={styles.header}>
-                <FontAwesome5 name='angle-left' size={30} color='#000' style={styles.iconHeader} onPress={() => navigation.goBack()} />
-                <View style={styles.sizeTextHeader}>
-                    <Text style={styles.textHeader}>{myFriend ? 'Bạn bè của ' + myFriend.name : 'Bạn bè'}</Text>
-                </View>
-            </View>
+
+            <HeaderCustomBot title={myFriend ? 'Bạn bè của ' + myFriend.name : 'Bạn bè'} back={() => navigation.pop()} />
             <View style={{ backgroundColor: 'white', padding: 15, flex: 1 }}>
                 {
                     myFriend &&
