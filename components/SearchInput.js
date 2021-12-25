@@ -13,8 +13,9 @@ const SearchInput = ({ placeholder, value, onChange }) => {
                 onChangeText={onChange}
                 style={styles.input}
                 autoFocus={true}
+                placeholderTextColor='#8EA0AB'
             />
-            <FontAwesome5 name='search' size={22} style={styles.icon} />
+            <FontAwesome5 name='search' size={22} style={styles.icon} color='#8EA0AB' />
 
         </View>
     );
@@ -28,14 +29,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 8,
         left: 10,
-        color: '#949494'
+        color: '#8EA0AB'
     }
     , input: {
         height: 40,
         width: width * 0.85,
         borderRadius: 10,
         paddingLeft: 50,
-        backgroundColor: '#F0F0F0',
+        backgroundColor: '#F3F7F9',
         color: '#242424',
         fontSize: 16
     }

@@ -12,6 +12,7 @@ import { getMaxListeners } from 'process';
 import { ModalComment } from './ModalComent';
 import { ModalLoading } from '../components/Loading';
 import { HeaderCustomBot } from './Admin/custom';
+import moment from 'moment';
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
@@ -43,8 +44,9 @@ export default function UserScreen({ user, route, navigation }) {
             setallUsers(users);
         });
         fbUser.doc(user.uid).onSnapshot(res => setmyUser(res.data()))
+        const uid = route?.params ? route?.params?.friend?.uid : user.uid
         await firestore().collection('Post').orderBy('createAt', "desc").onSnapshot(res => {
-            setPost(res.docs.filter(res => res.data().uid == user.uid && res.data().status == 2))
+            setPost(res.docs.filter(res => res.data().uid == uid && res.data().status == 2))
         })
 
     }, [])
@@ -82,32 +84,23 @@ export default function UserScreen({ user, route, navigation }) {
     function HandleFriend(index) {
         switch (options.key) {
             case 0:
-                index == 0 ?
-                    deleteFriend(route?.params?.friend)
-                    :
-                    console.log('hide');
+                index == 0 && deleteFriend(route?.params?.friend)
+
                 break;
             case 1:
-                index == 0 ?
-                    cancelFriend(route?.params?.friend)
-                    :
-                    console.log('hide');
+                index == 0 && cancelFriend(route?.params?.friend)
                 break;
             case 2:
                 index == 0 ?
                     acceptFriend(route?.params?.friend)
                     :
-                    index == 1 ?
-                        refuseFriend(route?.params?.friend)
-                        :
-                        console.log('hide');
+                    index == 1 && refuseFriend(route?.params?.friend)
+
 
                 break;
             case 3:
-                index == 0 ?
-                    addFriend(route?.params?.friend)
-                    :
-                    console.log('hide');
+                index == 0 && addFriend(route?.params?.friend)
+
                 break;
         }
     }
@@ -287,7 +280,22 @@ export default function UserScreen({ user, route, navigation }) {
                             firestore().collection('users').doc(user.uid).update({
                                 image: downloadURL
                             })
+                            const time = new Date().getTime();
+                            firestore().collection('Post').add({
+                                title: null,
+                                description: ' đã cập nhật ảnh đại diện.',
+                                image: [{ url: downloadURL }],
+                                createAt: time,
+                                like: [],
+                                avt: myUser.image,
+                                email: user.email,
+                                name: myUser.name,
+                                status: 2,
+                                uid: user.uid,
+                                comments: []
+                            });
                         });
+
                     }
                 );
             }
@@ -353,15 +361,14 @@ export default function UserScreen({ user, route, navigation }) {
     }
 
     return (
-        <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: 'white' }}>
+        <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: '#fff' }}>
             {
                 route?.params ?
                     <HeaderCustomBot title={route?.params?.friend?.name} back={() => navigation.pop()} />
-
                     :
                     <HeaderHome
                         title='Cá nhân'
-                        SourceImg={myUser.image}
+                        SourceImg={avt != '' ? avt : myUser.image}
                         onPressUser={() => navigation.navigate("account")}
                         number={myUser?.friendAwait?.length}
                         clickFriendAwait={() => navigation.navigate("FriendAwait", { myUser: myUser, allusers: allUsers })}
@@ -430,7 +437,7 @@ export default function UserScreen({ user, route, navigation }) {
                                     }
                                     <TouchableOpacity
                                         onPress={() => navigation.navigate('chat', {
-                                            name: route?.params?.friend.name, uid: route?.params?.friend.uid, image: route?.params?.image,
+                                            name: route?.params?.friend.name, uid: route?.params?.friend.uid, image: route?.params?.friend.image,
                                             status: typeof (route?.params?.friend.status) == "string" ? route?.params?.friend.status : route?.params?.friend.status.toDate().toString()
                                         })}
                                         style={[styles.fb, { width: width * 0.13 }]}>
@@ -461,7 +468,6 @@ export default function UserScreen({ user, route, navigation }) {
                             onPress={(index) => HandleFriend(index)}
                         />
                     </View>
-
                     {
                         !route?.params ? <View style={styles.profile}>
                             {myUser?.hocvan && <FormProfile iconName='graduation-cap' title={myUser?.hocvan} />}
@@ -486,7 +492,7 @@ export default function UserScreen({ user, route, navigation }) {
                             {
                                 route?.params ?
                                     <Text style={{ fontSize: 14, }}>{route?.params?.friend.listFriends.length} Bạn bè
-                                        {
+                                        {/* {
                                             myUser?.listFriends?.map(result => {
                                                 let sum = 0;
                                                 if (route?.params?.friend.listFriends.includes(result)) sum++;
@@ -500,7 +506,7 @@ export default function UserScreen({ user, route, navigation }) {
                                                     </View>
                                                 )
                                             })
-                                        }
+                                        } */}
                                     </Text>
                                     :
                                     <Text style={{ fontSize: 14, }}>{myUser?.listFriends?.length} Bạn bè</Text>
@@ -528,7 +534,7 @@ export default function UserScreen({ user, route, navigation }) {
                             <Text style={{ color: 'skyblue' }}>Bộ lọc</Text>
                         </View>
                         <View style={[styles.flexRcenter, { height: 50, marginVertical: 10, }]}>
-                            <Image source={{ uri: myUser.image }} style={{ width: 50, height: 50, borderRadius: 25 }} />
+                            <Image source={{ uri: avt != '' ? avt : myUser.image }} style={{ width: 50, height: 50, borderRadius: 25 }} />
                             <TouchableOpacity style={{ flex: 1, padding: 10 }} onPress={() => navigation.navigate('NewPost', { myUser: myUser })}>
                                 <Text style={{ color: 'grey' }}>Bạn đang nghĩ gì?</Text>
                             </TouchableOpacity>
@@ -572,6 +578,8 @@ export default function UserScreen({ user, route, navigation }) {
                                 if (result.data())
                                     return (
                                         <FormPost
+                                            description={result.data().description}
+                                            createAt={result.data().createAt}
                                             checklike={result.data().like.includes(user.uid)}
                                             comment={() => openComment(result.id)}
                                             like={result.data().like.length}
@@ -580,7 +588,7 @@ export default function UserScreen({ user, route, navigation }) {
                                             sourceImg={result.data().image}
                                             userName={route?.params ? route?.params?.friend.name : myUser.name}
                                             title={result.data().title}
-                                            avtImage={route?.params ? route?.params?.friend.image : myUser.image}
+                                            avtImage={route?.params ? route?.params?.friend.image : avt != '' ? avt : myUser.image}
                                             openImage={() => { setUrlImage(result.data().image); setvisible(true) }}
                                         />
                                     )
@@ -684,14 +692,14 @@ const styles = StyleSheet.create({
         bottom: 10
     },
     allFriend: {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#F3F7F9',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10
     },
     headerpost: {
         height: 15,
-        backgroundColor: '#B4B4B4'
+        backgroundColor: '#EAEAEA'
     },
     flexRcenter:
     {

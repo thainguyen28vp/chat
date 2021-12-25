@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Image, ScrollView, StatusBar } from 'react-native'
 import SearchInput from '../components/SearchInput';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { HeaderCustomBot } from './Admin/custom';
@@ -88,7 +88,7 @@ const SearchFriend = ({ route, navigation }) => {
 
     }
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
 
             <HeaderCustomBot title={myFriend ? 'Bạn bè của ' + myFriend.name : 'Bạn bè'} back={() => navigation.pop()} />
             <View style={{ backgroundColor: 'white', padding: 15, flex: 1 }}>
@@ -125,7 +125,7 @@ const SearchFriend = ({ route, navigation }) => {
                                                 if (res.uid === result) {
                                                     if (myUser.listFriends.includes(result)) sum++;
                                                     return (
-                                                        <Form result={res} sum={sum} onPress={() => navigation.push('UserScreen', { friend: res })} />
+                                                        <Form result={res} sum={0} onPress={() => navigation.push('UserScreen', { friend: res })} />
                                                     )
                                                 }
                                             })
@@ -133,10 +133,9 @@ const SearchFriend = ({ route, navigation }) => {
                                             myUser.listFriends.map(result => {
                                                 let sum = 0;
                                                 if (res.uid === result) {
-                                                    console.log(res);
                                                     if (res.listFriends.includes(result)) sum++;
                                                     return (
-                                                        <Form result={res} sum={sum} onPress={() => navigation.push('UserScreen', { friend: res })} />
+                                                        <Form result={res} sum={0} onPress={() => navigation.push('UserScreen', { friend: res })} />
                                                     )
                                                 }
                                             })

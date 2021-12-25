@@ -13,7 +13,6 @@ export const ModalLoading1 = (props) => {
         overlayColor="rgba(0,0,0,0.5)"
         speed={1}
     >
-
     </AnimatedLoader>
 
 

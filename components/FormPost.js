@@ -1,8 +1,9 @@
+import moment from 'moment'
 import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { deviceHeight, deviceWidth } from '../screens/Admin/custom'
-export const FormPost = ({ sourceImg, title, userName, avtImage, openImage, onPressLike, like, comment, checklike, commentLength }) => {
+export const FormPost = ({ sourceImg, title, userName, avtImage, openImage, onPressLike, like, comment, checklike, commentLength, createAt, description }) => {
     return (
         <View>
             <View style={styles.header}></View>
@@ -10,13 +11,14 @@ export const FormPost = ({ sourceImg, title, userName, avtImage, openImage, onPr
                 <View style={{ flexDirection: 'row' }}>
                     <Image source={{ uri: avtImage }} style={styles.avt} />
                     <View>
-                        <Text style={styles.txtName}>{userName}</Text>
+                        <Text style={styles.txtName}>{userName}<Text style={{ color: '#A0A4A8', fontSize: 16, fontWeight: 'normal' }}>{description}</Text></Text>
                         <View style={styles.flexrow}>
-                            <Text style={styles.txt}>6 giờ</Text>
+                            <Text style={styles.txt}>{(createAt % 1 == 0 && new Date().getTime() - createAt < 60000) ? 'vừa xong' : (createAt % 1 == 0 && 3600000 > new Date().getTime() - createAt && new Date().getTime() - createAt > 60000) ? ((new Date().getTime() - createAt) / 60000).toFixed(0) + ' phút' : (createAt % 1 == 0 && 86400000 > new Date().getTime() - createAt && new Date().getTime() - createAt > 3600000) ? ((new Date().getTime() - createAt) / 3600000).toFixed(0) + ' giờ' : moment(createAt).format('DD/MM-H:mm')}</Text>
                             <Text style={{ marginHorizontal: 5 }}>.</Text>
                             <FontAwesome5 name='globe-asia' size={16} color='grey' />
                         </View>
                     </View>
+
                 </View>
                 <FontAwesome5 name='ellipsis-h' size={20} color='grey' />
             </View>
@@ -79,7 +81,7 @@ export const FormPost = ({ sourceImg, title, userName, avtImage, openImage, onPr
         </View>
     )
 }
-export const FormPostComment = ({ sourceImg, title, userName, avtImage, openImage, onPressLike, like, comment, checklike }) => {
+export const FormPostComment = ({ sourceImg, title, userName, avtImage, openImage, onPressLike, like, comment, checklike, createAt }) => {
     return (
         <View >
             <View style={{ marginBottom: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: deviceWidth - 20 }}>
@@ -90,7 +92,7 @@ export const FormPostComment = ({ sourceImg, title, userName, avtImage, openImag
                         <View>
                             <Text style={styles.txtName}>{userName}</Text>
                             <View style={styles.flexrow}>
-                                <Text style={styles.txt}>6 giờ</Text>
+                                <Text style={styles.txt}>{(createAt % 1 == 0 && new Date().getTime() - createAt < 60000) ? 'vừa xong' : (createAt % 1 == 0 && 3600000 > new Date().getTime() - createAt && new Date().getTime() - createAt > 60000) ? ((new Date().getTime() - createAt) / 60000).toFixed(0) + ' phút' : (createAt % 1 == 0 && 86400000 > new Date().getTime() - createAt && new Date().getTime() - createAt > 3600000) ? ((new Date().getTime() - createAt) / 3600000).toFixed(0) + ' giờ' : moment(createAt).format('DD/MM-H:mm')}</Text>
                                 <Text style={{ marginHorizontal: 5 }}>.</Text>
                                 <FontAwesome5 name='globe-asia' size={16} color='grey' />
                             </View>
@@ -147,7 +149,7 @@ export const FormPostComment = ({ sourceImg, title, userName, avtImage, openImag
 const styles = StyleSheet.create({
     header: {
         height: 15,
-        backgroundColor: '#B4B4B4'
+        backgroundColor: '#EAEAEA'
     },
     userProfile: {
         flexDirection: 'row',

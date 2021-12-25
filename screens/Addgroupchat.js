@@ -72,7 +72,7 @@ export default function Addgroupchat({ navigation, user }) {
             setImage(imageu1)
 
         })
-    onChangeValue = (itemSelected, index) => {
+    const onChangeValue = (itemSelected, index) => {
 
 
         const newData = listF.map(item => {
@@ -93,7 +93,7 @@ export default function Addgroupchat({ navigation, user }) {
         setlistslect(newData.filter(item => item.selected == true))
 
     }
-    submit = () => {
+    const submit = () => {
         if (namegroup != "" && usert.length >= 3) {
             const mymsg = {
                 _id: 'abcxhscnajnjas',
@@ -102,11 +102,7 @@ export default function Addgroupchat({ navigation, user }) {
                     _id: user.uid,
                     name: name1,
                     avatar: image
-
-
                 },
-
-
             }
             firestore().collection('chatrooms1')
                 .doc(idadd)
@@ -120,13 +116,13 @@ export default function Addgroupchat({ navigation, user }) {
                 us1: {
                     id: idadd,
                     name: namegroup,
-                    avatar: 'https://olalasexy.com/wp-content/uploads/2021/05/ten-nhom-chat.jpg'
+                    avatar: 'https://png.pngtree.com/element_our/png_detail/20181021/group-avatar-icon-design-vector-png_141882.jpg'
 
                 },
                 us2: {
                     id: idadd,
                     name: namegroup,
-                    avatar: 'https://olalasexy.com/wp-content/uploads/2021/05/ten-nhom-chat.jpg'
+                    avatar: 'https://png.pngtree.com/element_our/png_detail/20181021/group-avatar-icon-design-vector-png_141882.jpg'
 
                 },
                 userT: usert
@@ -146,7 +142,7 @@ export default function Addgroupchat({ navigation, user }) {
 
 
 
-    renderItem = ({ item, index }) => {
+    const renderItem = ({ item, index }) => {
         return (
             <View style={{ paddingLeft: 10, paddingRight: 15, backgroundColor: 'transparent' }} key={index}>
                 <View style={styles.containerv}>

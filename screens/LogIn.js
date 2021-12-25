@@ -21,6 +21,7 @@ import InputCustom from '../components/InputCustom';
 import ButtonCustom from '../components/ButtonCustom';
 import Toast from 'react-native-simple-toast';
 import { ModalLoading1 } from '../components/Loaing1';
+import { deviceWidth } from './Admin/custom';
 const LoginSchema = Yup.object().shape({
     password: Yup.string().required(''),
     email: Yup.string().required(''),
@@ -31,7 +32,7 @@ export default function Login({ navigation }) {
         setLoading(true)
         try {
             const result = await auth().signInWithEmailAndPassword(values.email.trim(), values.password.trim())
-            setLoading(false)
+            // setLoading(false)
         } catch (err) {
             setLoading(false);
             Toast.show('Tài khoản hoặc mật khẩu không chính xác.', Toast.LONG);
@@ -56,7 +57,7 @@ export default function Login({ navigation }) {
                                 source={require('../assets/messenger.png')}
                                 style={styles.imagelogo}
                             />
-                            <Text style={styles.textLogo}>messenger</Text>
+                            <Text style={styles.textLogo}>Meta <Text style={{ fontSize: 17, color: 'grey' }}>connect</Text></Text>
                         </View>
                         <Formik
                             initialValues={{ email: '', password: '' }}
@@ -106,13 +107,10 @@ export default function Login({ navigation }) {
                                 </View>
                             )}
                         </Formik>
-                        <View style={{ alignItems: 'center' }}>
+                        <View style={{ alignItems: 'center', paddingTop: 5 }}>
                             <Text>Bạn chưa có tài khoản?
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('signIn')}
-                                >
-                                    <Text style={{ fontWeight: 'bold', color: '#005CFF' }}> Đăng ký</Text>
-                                </TouchableOpacity>
+                                <Text onPress={() => navigation.navigate('signIn')} style={{ fontWeight: 'bold', color: '#005CFF' }}> Đăng ký</Text>
+
                             </Text>
                         </View>
                     </View>
@@ -150,7 +148,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         paddingLeft: 20,
         paddingBottom: '5%',
-        paddingTop: '10%'
+        paddingTop: deviceWidth * 0.12 + StatusBar.currentHeight
 
     },
     imagelogo: {
@@ -158,8 +156,8 @@ const styles = StyleSheet.create({
         width: 80
     },
     textLogo: {
-        fontSize: 26,
-
+        fontSize: 32,
+        paddingTop: 5
     },
     logo: {
         justifyContent: 'center',

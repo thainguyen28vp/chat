@@ -5,6 +5,7 @@ import ButtonCustom from '../../components/ButtonCustom'
 import { HeaderCustomBot } from './custom'
 import firestore from '@react-native-firebase/firestore'
 import SimpleToast from 'react-native-simple-toast'
+import moment from 'moment'
 
 export default function DetailPost({ navigation, route }) {
     const [visible, setvisible] = useState(false)
@@ -37,17 +38,15 @@ export default function DetailPost({ navigation, route }) {
             <StatusBar barStyle='dark-content' />
 
             <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, backgroundColor: '#fff' }}>
-                <View style={{ paddingTop: StatusBar.currentHeight }}>
 
-                    <HeaderCustomBot title={'Bài đăng của ' + route.params.data.name} back={() => navigation.pop()} />
-                </View>
+                <HeaderCustomBot title={'Bài đăng của ' + route.params.data.name} back={() => navigation.pop()} />
                 <View style={{ flex: 1, justifyContent: 'space-between', }}>
                     <View style={{ flex: 1, paddingHorizontal: 16 }}>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000', marginVertical: 16 }}>Người đăng : {route.params.data.name}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
 
                             <Text style={{ fontSize: 16, color: '#000', fontWeight: 'bold' }}>Thời gian tạo : </Text>
-                            <Text style={{ fontSize: 16, color: '#000', }}>27/11/2021 11:10 AM</Text>
+                            <Text style={{ fontSize: 16, color: '#000', }}>{moment(route.params.data.createAt).format('DD/MM/YYYY H:mm')}</Text>
                         </View>
                         <Text style={{ paddingVertical: 10, fontSize: 16, color: '#000', fontWeight: 'bold' }}>Nội dung :</Text>
                         <Text style={{ fontSize: 14, color: '#52575C', }}>
@@ -77,7 +76,7 @@ export default function DetailPost({ navigation, route }) {
                                                         :
                                                         <View >
                                                             <View style={{ flexDirection: 'row' }}>
-                                                                <Image source={{ uri: route.params.data.image[0].url }} style={styles.imagePost} resizeMode='cover' />
+                                                                <Image source={{ uri: route.params.data.image[1].url }} style={styles.imagePost} resizeMode='cover' />
                                                             </View>
 
                                                             <View style={{ flexDirection: 'row' }}>
@@ -114,14 +113,31 @@ export default function DetailPost({ navigation, route }) {
                 </View>
 
             </ScrollView >
-            <View style={{ justifyContent: 'space-between', paddingHorizontal: 16, flexDirection: 'row', paddingVertical: 20 }}>
-                <View style={{ width: '40%' }}>
-                    <ButtonCustom textButton='TỪ CHỐI' opacity={1} disabled={false} color={['#ccc', '#8EA0AB']} onPress={() => update(1)} />
+            {route.params.data.status == 0 ?
+                <View style={{ justifyContent: 'space-between', paddingHorizontal: 16, flexDirection: 'row', paddingVertical: 20 }}>
+                    <View style={{ width: '47%' }}>
+                        <ButtonCustom textButton='TỪ CHỐI' opacity={1} disabled={false} color={['#ccc', '#8EA0AB']} onPress={() => update(1)} />
+                    </View>
+                    <View style={{ width: '47%' }}>
+                        <ButtonCustom textButton='PHÊ DUYỆT' opacity={1} disabled={false} onPress={() => update(2)} />
+                    </View>
                 </View>
-                <View style={{ width: '40%' }}>
-                    <ButtonCustom textButton='PHÊ DUYỆT' opacity={1} disabled={false} onPress={() => update(2)} />
-                </View>
-            </View>
+                :
+                route.params.data.status == 1 ?
+                    <View style={{ paddingHorizontal: 16, alignItems: 'center', paddingVertical: 20 }}>
+                        <View style={{ width: '47%' }}>
+                            <ButtonCustom textButton='PHÊ DUYỆT' opacity={1} disabled={false} onPress={() => update(2)} />
+                        </View>
+                    </View>
+                    :
+                    <View style={{ paddingHorizontal: 16, alignItems: 'center', paddingVertical: 20 }}>
+                        <View style={{ width: '47%' }}>
+                            <ButtonCustom textButton='TỪ CHỐI' opacity={1} disabled={false} color={['#ccc', '#8EA0AB']} onPress={() => update(1)} />
+                        </View>
+
+                    </View>
+
+            }
         </View>
     )
 }

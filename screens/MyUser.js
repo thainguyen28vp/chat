@@ -5,6 +5,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import firestore from '@react-native-firebase/firestore'
 import storage from '@react-native-firebase/storage'
 import auth from '@react-native-firebase/auth'
+import { ModalLoading1 } from '../components/Loaing1';
 
 const Item = ({ txtItem, icon, status }) => {
     return (
@@ -25,7 +26,7 @@ const Item = ({ txtItem, icon, status }) => {
 export default function MyUser({ navigation, user }) {
 
     const [profile, setProfile] = useState('')
-    const [image, setImage] = useState(null)
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         firestore().collection('users').doc(user.uid).get().then(docSnap => {
             setProfile(docSnap.data())
@@ -91,8 +92,9 @@ export default function MyUser({ navigation, user }) {
                         <Item icon='adn' txtItem='Sửa ảnh' status='Tắt' />
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => {
-                            firestore().collection('users')
+                        onPress={async () => {
+                            setLoading(true);
+                            await firestore().collection('users')
                                 .doc(user.uid)
                                 .update({
                                     status: firestore.FieldValue.serverTimestamp(),
@@ -100,12 +102,14 @@ export default function MyUser({ navigation, user }) {
                                 }).then(() => {
                                     auth().signOut()
                                 })
-                        }}
+                        }
+                        }
                     >
                         <Item icon='algolia' txtItem='Đăng xuất' />
                     </TouchableOpacity>
                 </View>
             </ScrollView>
+            <ModalLoading1 visible={loading} />
         </View>
     );
 }

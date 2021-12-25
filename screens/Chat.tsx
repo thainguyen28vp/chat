@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Image, TouchableWithoutFeedback, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, TouchableWithoutFeedback, Dimensions, StatusBar } from 'react-native'
 import { Appbar, Avatar } from 'react-native-paper';
 import {
     GiftedChat, Bubble, InputToolbar, Send, Actions,
     ActionsProps,
 } from 'react-native-gifted-chat'
+import LinearGradient from 'react-native-linear-gradient';
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore'
 import { IconButton } from 'react-native-paper';
 import Utils from '../Utils';
@@ -21,6 +22,7 @@ import {
 import Button from '../components/Button';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { deviceHeight, deviceWidth } from './Admin/custom';
 
 
 
@@ -191,7 +193,6 @@ export default function Chat({ navigation, user, route }) {
     }
     const join = async () => {
 
-        console.log("joining the call");
         connecting.current = true;
         setGettingCall(false);
 
@@ -262,7 +263,6 @@ export default function Chat({ navigation, user, route }) {
             //on new ICE candidate add it to firestore
             pc.current.onicecandidate = (event) => {
                 if (event.candidate) {
-                    console.log('candidate', event.candidate)
                     candidateCollection.add(event.candidate);
                 }
             };
@@ -278,24 +278,41 @@ export default function Chat({ navigation, user, route }) {
     };
     if (gettingcall == true) {
         return (
-            <View>
-                <Image style={styles.image} source={{ uri: 'https://suachualaptop24h.com/upload_images/images/2021/03/31/tong-hop-50-hinh-nen-den-bao-dep-va-chat-luong%20%20(8)(1).jpg' }} />
-                <View style={styles.bcontainer}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
+                <LinearGradient colors={['white', '#93B3DE', '#5A96E8', '#2172DF', '#004199']} style={{ position: 'absolute', bottom: 0 }} >
+                    < View style={{ height: deviceHeight * 0.52, width: deviceWidth }}>
+                        <Text></Text>
+                    </View>
+                </LinearGradient >
+                <View style={styles.logo}>
+                    <Image
+                        source={require('../assets/messenger.png')}
+                        style={styles.imagelogo}
+                    />
+                    <Text style={styles.textLogo}>Meta <Text style={{ fontSize: 17, color: 'grey' }}>connect</Text></Text>
+                </View>
+                <Image style={styles.image} source={{ uri: image2 }} />
+                <Text style={{ fontSize: 28, color: '#fff', fontWeight: 'bold', paddingTop: 10 }}>{name2}</Text>
+                <View style={{ position: 'absolute', bottom: 40, alignItems: 'center', flexDirection: 'row' }}>
                     <Button
+                        size={24}
                         iconName="phone"
                         backgroundColor="green"
                         onPress={join}
                         style={{ marginRight: 30 }}
                     />
                     <Button
-                        iconName="phone"
+                        size={28}
+                        iconName="times"
                         backgroundColor="red"
                         onPress={hangup}
                         style={{ marginLeft: 30 }}
                     />
 
                 </View>
-            </View>
+
+
+            </View >
         );
     }
 
@@ -309,7 +326,7 @@ export default function Chat({ navigation, user, route }) {
                         streamURL={localStream.toURL()}
                         objectFit={'cover'}
                         style={styles.video} />
-                    <Button style={styles.bcontainer} iconName="phone" backgroundColor="red" onPress={hangup} />
+                    <Button size={24} style={styles.bcontainer} iconName="times" backgroundColor="red" onPress={hangup} />
                 </View>
             );
         }
@@ -324,7 +341,7 @@ export default function Chat({ navigation, user, route }) {
                         streamURL={localStream.toURL()}
                         objectFit={'cover'}
                         style={styles.videoLocal} />
-                    <Button style={styles.bcontainer} iconName="phone" backgroundColor="red" onPress={hangup} />
+                    <Button size={24} style={styles.bcontainer} iconName="times" backgroundColor="red" onPress={hangup} />
                 </View>
             );
         }
@@ -416,7 +433,7 @@ export default function Chat({ navigation, user, route }) {
                 })
             })
             listtoken.length != 0 &&
-                fetch('http://5b525580c7bd.ngrok.io/send-noti', {
+                fetch('http://dd04-2402-800-6113-cdd7-2dee-fae3-b01c-82f9.ngrok.io/send-noti', {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json'
@@ -435,7 +452,6 @@ export default function Chat({ navigation, user, route }) {
             try {
 
                 firestore().collection('chatrooms1').doc(docid).collection('messages').get().then(res => {
-                    console.log(res.size)
                     if (res.size == 1) {
                         firestore().collection('chatrooms1').doc(docid).set(mymsg)
                     }
@@ -594,7 +610,7 @@ export default function Chat({ navigation, user, route }) {
 
 
     return (
-        <View style={{ flex: 1, backgroundColor: "white" }}>
+        <View style={{ flex: 1, backgroundColor: "white", paddingTop: StatusBar.currentHeight }}>
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
                 <Image source={{ uri: image }} style={{ width: 40, height: 40, borderRadius: 20 }} />
@@ -662,11 +678,7 @@ export default function Chat({ navigation, user, route }) {
                         </View>
 
                         <Bubble
-
-
                             {...props}
-
-
                             wrapperStyle={{
                                 right: {
                                     backgroundColor: "#9086FC",
@@ -716,20 +728,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     image: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
+
+        width: deviceWidth * 0.4,
+        height: deviceWidth * 0.4,
+        borderRadius: deviceWidth * 0.4
+
     },
     containerv: {
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
+        backgroundColor: 'red'
 
     },
     sendingContainer: {
         justifyContent: 'center',
         alignItems: 'center'
-
     },
     container: {
         flex: 1,
@@ -752,9 +766,7 @@ const styles = StyleSheet.create({
         elevation: 10,
     },
     bcontainer: {
-        flexDirection: 'row',
-        bottom: 40,
-
+        marginBottom: 40
     },
     status: {
         height: 15,
@@ -766,7 +778,22 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: -1,
         bottom: 5
-    }
+    },
+    imagelogo: {
+        height: 80,
+        width: 80
+    },
+    textLogo: {
+        fontSize: 32,
+        paddingTop: 5
+    },
+    logo: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 40,
+        position: 'absolute',
+        top: deviceHeight * 0.1
+    },
 });
 
 

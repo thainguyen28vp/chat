@@ -8,7 +8,7 @@ export default function Formchat({ SourecImg, NameUser, Text1, SentT, Time, Stat
     const timenow = serverTimed + ' thg ' + serverTimem
 
     return (
-        <View style={{ paddingLeft: 10, paddingRight: 15, backgroundColor: 'transparent' }}>
+        <View style={{ paddingLeft: 10, paddingRight: 15, }}>
             <View style={styles.container}>
 
 

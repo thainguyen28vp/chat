@@ -24,38 +24,10 @@ export default function FriendAwaitScreen({ route, navigation }) {
                     />
                 </View>
                 <View style={{ justifyContent: 'center', paddingLeft: 10, paddingVertical: 10 }}>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 5 }}>
                         {data.name}
                     </Text>
-                    {
-                        allusers.map(res => {
 
-                            return (
-                                <>
-                                    {
-                                        myUser.friendAwait.map(result => {
-                                            if (res.uid == result) {
-                                                let sum = 0;
-                                                if (res.listFriends.includes(result)) sum++;
-                                                return (
-                                                    <>
-                                                        {
-                                                            sum != 0 ?
-                                                                <Text>{sum} bạn chung</Text>
-                                                                :
-                                                                <></>
-                                                        }
-
-                                                    </>
-                                                )
-                                            }
-
-                                        })
-                                    }
-                                </>
-                            )
-                        })
-                    }
 
                     {
 
@@ -168,9 +140,10 @@ const styles = StyleSheet.create({
         width: width * 0.65
     },
     avt: {
-        height: width * 0.25,
-        width: width * 0.25,
-        borderRadius: width * 0.25 / 2
+        height: width * 0.2,
+        width: width * 0.2,
+        borderRadius: width * 0.2,
+        marginRight: 10
     },
     form: {
         flexDirection: 'row',

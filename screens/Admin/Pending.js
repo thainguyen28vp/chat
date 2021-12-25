@@ -20,7 +20,8 @@ export default function Pending({ navigation, route }) {
     const [datapost, setdatap] = useState([]);
     const [loading, setLoading] = useState(true)
     const [loadingRef, setLoadingRef] = useState(false)
-
+    const [search, setSearch] = useState('')
+    const [datasearch, setdatasearch] = useState([])
 
     useEffect(() => {
         reload()
@@ -32,26 +33,28 @@ export default function Pending({ navigation, route }) {
         const post = await firestore().collection('Post').where('status', '==', 0).get()
         // const allposts = post.docs.map(res => res.data())
         // console.log(post.docs)
+        await setdatasearch(post.docs)
         setdatap(post.docs)
-        setTimeout(async () => {
-            setLoadingRef(false)
-            setLoading(false);
-        }, 1000)
+
+        setLoading(false);
+
 
 
     }
+    useEffect(() => {
+        let post = [];
+        if (search == '') {
+            setdatasearch(datapost);
+        }
+        else {
+            search.indexOf('@') == -1 ?
+                post = datapost.filter(result => result.data().name.toLowerCase().search(search.toLowerCase()) > -1)
+                :
+                post = datapost.filter(result => result.data().email.toLowerCase().search(search.toLowerCase()) > -1)
+            setdatasearch(post)
+        }
 
-
-
-    //                     const post = await firestore().collection('Post').doc(doc.id).collection('posts').where('status', '==', 2).get()
-    //                     const allposts = post.docs.map(res => res.data())
-    //                     post.docs.forEach(doc2 => {
-    //                         let id = doc2.id
-    //                         let data = doc2.data()
-    //                         const dtpost = { id, data }
-    //                         data1.push(dtpost)
-    //                     })
-
+    }, [search])
 
     function back() {
         const radom = Math.floor(Math.random() * 10000)
@@ -63,29 +66,29 @@ export default function Pending({ navigation, route }) {
         <View
             style={{ flex: 1, backgroundColor: '#fff' }}>
             <StatusBar barStyle='dark-content' />
-            <FlatList
-                ListHeaderComponent={() => <View>
-                    <View style={{ paddingTop: StatusBar.currentHeight }}>
-
-                        <HeaderCustomBot title='Bài đăng chờ duyệt' back={() => back()} />
+            <View >
+                <HeaderCustomBot title='Bài đăng chờ duyệt' back={() => back()} />
+                <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', paddingHorizontal: 16 }}>
+                    <View style={{ flexDirection: 'row', width: screenWidth - 32, alignItems: 'center', marginTop: 20, backgroundColor: '#F3F7F9', marginBottom: 24, height: 36, borderRadius: 10, }}>
+                        <Ic_search />
+                        <TextInput style={{ width: '100%' }} placeholder='Tìm kiếm' onChangeText={setSearch} value={search} />
                     </View>
-                    <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', paddingHorizontal: 16 }}>
-                        <View style={{ flexDirection: 'row', width: screenWidth - 32, alignItems: 'center', marginTop: 20, backgroundColor: '#F3F7F9', marginBottom: 24, height: 36, borderRadius: 10, }}>
-                            <Ic_search />
-                            <TextInput style={{ width: '100%' }} placeholder='Tìm kiếm' onChangeText={''} value={''} />
-                        </View>
-                    </View>
-                </View>}
-                columnWrapperStyle={{ justifyContent: 'space-between' }}
-                numColumns={2}
-                data={datapost}
-                renderItem={({ item }) => <Form item={item.data()} onPress={() => navigation.navigate('detailPost', { check: 0, data: item.data(), id: item.id })} />}
-                keyExtractor={(item, index) => index.toString()}
-                refreshControl={
-                    <RefreshControl refreshing={loadingRef} onRefresh={() => console.log('load')} />
+                </View>
+            </View>
+            <View style={{ paddingHorizontal: 8 }}>
+                <FlatList
 
-                }
-            />
+                    columnWrapperStyle={{ justifyContent: 'space-between' }}
+                    numColumns={2}
+                    data={datasearch}
+                    renderItem={({ item }) => <Form item={item.data()} onPress={() => navigation.navigate('detailPost', { check: 0, data: item.data(), id: item.id })} />}
+                    keyExtractor={(item, index) => index.toString()}
+                    refreshControl={
+                        <RefreshControl refreshing={loadingRef} onRefresh={() => console.log('load')} />
+
+                    }
+                />
+            </View>
             <ModalLoading visible={loading} />
             <ModalSignup isVisible={visible} onPressClose={() => setVisible(false)} />
         </View>

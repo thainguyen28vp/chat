@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions, ScrollView, StatusBar } from 'react-native'
-import { deviceWidth, HeaderCustomBot } from './custom';
-import { Ic_cong, Ic_goto, Ic_search, Ic_thongke } from './iconSVG'
+import { deviceHeight, deviceWidth, HeaderCustomBot } from './custom';
+import { Ic_back, Ic_cong, Ic_goto, Ic_search, Ic_thongke } from './iconSVG'
 import { ModalSignup } from './modal';
 import moment from 'moment'
 import firestore from '@react-native-firebase/firestore'
@@ -25,16 +25,30 @@ export default function ListUser({ navigation }) {
     const [loading, setLoading] = useState(true)
     const [thongke, setthongke] = useState([])
     const [ngay, setngay] = useState([])
+    const [search, setSearch] = useState('')
+    const [searchUsers, setSearchUsers] = useState([])
 
     useEffect(async () => {
-        // firestore().collection('users').get().then(data => {
-        //     // setdata(docSnap.data())
-        //     console.log('data', data.data())
-        const data = await firestore().collection('users').where('decentralization', '==', 0).get()
+        const data = await firestore().collection('users').where('decentralization', '!=', 1).get()
         const allusers = data.docs.map(res => res.data())
-        await setdatau(allusers)
+        setdatau(allusers)
+        await setSearchUsers(allusers)
         setLoading(false);
     }, [])
+    useEffect(() => {
+        let users = [];
+        if (search == '') {
+            setSearchUsers(datauser);
+        }
+        else {
+            search.indexOf('@') == -1 ?
+                users = datauser.filter(result => result.name.toLowerCase().search(search.toLowerCase()) > -1)
+                :
+                users = datauser.filter(result => result.email.toLowerCase().search(search.toLowerCase()) > -1)
+            setSearchUsers(users)
+        }
+
+    }, [search])
     function thongketg() {
         setHide(!hide)
         let check = []
@@ -47,7 +61,6 @@ export default function ListUser({ navigation }) {
         })
         setthongke(check)
         setngay(ngay)
-        console.log(ngay, check)
     }
     const Form = ({ item }) => {
         return <TouchableOpacity
@@ -86,37 +99,28 @@ export default function ListUser({ navigation }) {
             showsVerticalScrollIndicator={false}
             style={{ flex: 1, backgroundColor: '#fff' }}>
             <StatusBar barStyle='dark-content' />
-            <View style={{ paddingTop: StatusBar.currentHeight }}>
-                <HeaderCustomBot title='Danh sách người dùng' back={() => navigation.pop()} />
+            <View style={styles.header}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => navigation.pop()} style={{ padding: 5 }}>
+                        <Ic_back />
+                    </TouchableOpacity>
+                    <Text style={{ fontSize: 18, paddingLeft: 10 }}>Danh sách người dùng</Text>
+                </View>
+                <TouchableOpacity
+
+                    onPress={() => thongketg()}
+                    style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{ fontSize: 16, color: 'blue' }}>Thống kê</Text>
+                </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', paddingHorizontal: 16 }}>
                 <View style={{ flexDirection: 'row', width: screenWidth - 32, alignItems: 'center', marginTop: 20, backgroundColor: '#F3F7F9', marginBottom: 24, height: 36, borderRadius: 10, }}>
                     <Ic_search />
-                    <TextInput style={{ width: '100%' }} placeholder='Tìm kiếm' onChangeText={''} value={''} />
+                    <TextInput style={{ width: '100%' }} placeholder='Tìm kiếm' onChangeText={setSearch} value={search} />
                 </View>
             </View>
-            <View style={{ paddingBottom: 25, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                <TouchableOpacity
-                    onPress={() => setVisible(true)}
-                    style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#8EA0AB', height: 50, paddingHorizontal: 10, borderRadius: 5 }}>
-                    <Ic_cong />
-                    <Text style={{ fontSize: 16, color: '#2F80ED', marginLeft: 10, fontWeight: 'bold' }}>
-                        ADD USER
-                    </Text>
-
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => thongketg()}
-                    style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#8EA0AB', height: 50, paddingHorizontal: 10, borderRadius: 5 }}>
-                    <Ic_thongke />
-                    <Text style={{ fontSize: 16, color: '#2F80ED', marginLeft: 10, fontWeight: 'bold' }}>
-                        THỐNG KÊ
-                    </Text>
-
-                </TouchableOpacity>
-            </View>
             {
-                hide && <View style={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: 20 }}>
+                hide && <View style={{ paddingHorizontal: 16, paddingBottom: 20 }}>
                     <LineChart
                         style={{ borderRadius: 10 }}
                         data={data}
@@ -143,7 +147,7 @@ export default function ListUser({ navigation }) {
             }
             <View style={{ paddingHorizontal: 16 }}>
                 {
-                    datauser.map(res => {
+                    searchUsers.map(res => {
                         return <Form item={res} />
                     })
                 }
@@ -154,4 +158,15 @@ export default function ListUser({ navigation }) {
     )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    header: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#CFE1ED',
+        marginTop: StatusBar.currentHeight,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        height: deviceHeight * 0.07,
+        paddingRight: 16,
+        paddingLeft: 8,
+    },
+})

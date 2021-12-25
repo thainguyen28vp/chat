@@ -17,25 +17,44 @@ import firestore from '@react-native-firebase/firestore'
 import storage from '@react-native-firebase/storage'
 import auth from '@react-native-firebase/auth'
 import { ModalLoading } from '../../components/Loading';
+import { ModalLoading1 } from '../../components/Loaing1';
+import SimpleToast from 'react-native-simple-toast';
 export default function Admin({ navigation, user }) {
     const [time, setTime] = useState(0)
     const [online, setonline] = useState(0)
     const [offline, setoffline] = useState(0)
     const [loading, setloading] = useState(true)
+    const [loading1, setloading1] = useState(false)
     const [lengthUser, setlengthUser] = useState(0)
     const [lengthPost, setlengthPost] = useState(0)
     const [lengthAdmin, setlengthAdmin] = useState(0)
-    useEffect(() => {
-        firestore().collection('Post').get().then(res => {
-            setlengthPost(res.docs.length);
+    useEffect(async () => {
+        Promise.all([
+            firestore().collection('Post').get(),
+            firestore().collection('users').where('decentralization', '==', 1).get(),
+            firestore().collection('users').where('decentralization', '==', 0).get()
+        ]).then((values) => {
+            const online = values[2].docs.map(res => res.data())
+            const sl = online.filter(res => res.status == 'online')
+            setlengthPost(values[0].docs.length);
+            setlengthAdmin(values[1].docs.length);
+            setlengthUser(values[2].docs.length);
+            setonline(sl.length)
+            setoffline(values[2].docs.length - sl.length)
+        }).catch((error) => {
+            SimpleToast.show('Vui lòng thử lại sau.', SimpleToast.LONG);
         })
-        firestore().collection('users').where('decentralization', '==', 1).get().then(res => {
-            setlengthAdmin(res.docs.length);
-        })
+        setloading(false)
+        // firestore().collection('Post').get().then(res => {
+        //     setlengthPost(res.docs.length);
+        // })
+        // firestore().collection('users').where('decentralization', '==', 1).get().then(res => {
+        //     setlengthAdmin(res.docs.length);
+        // })
         setInterval(() => {
             setTimess();
         }, 1000);
-        thongke()
+        //thongke()
         return () => {
 
         }
@@ -102,6 +121,7 @@ export default function Admin({ navigation, user }) {
                 navigation.navigate('listAdmin');
                 break;
             case 3:
+                setloading1(true);
                 firestore().collection('users')
                     .doc(user.uid)
                     .update({
@@ -141,9 +161,8 @@ export default function Admin({ navigation, user }) {
             <View style={{ paddingTop: StatusBar.currentHeight }}>
                 <Text style={{ paddingHorizontal: 16, fontFamily: 'SVN-Poppins', fontStyle: 'normal', fontWeight: 'bold', fontSize: 34, lineHeight: 41, letterSpacing: 0.374, color: '#fff', paddingTop: 20 }}>Xin chào,Admin</Text>
                 <Text style={{ paddingHorizontal: 16, fontFamily: 'SVN-Poppins', fontStyle: 'normal', fontWeight: 'bold', fontSize: 18, lineHeight: 41, letterSpacing: 0.374, color: '#fff', paddingBottom: 20 }}>{time}</Text>
-
             </View>
-            <View style={{ flex: 1, backgroundColor: '#fff', borderTopLeftRadius: 25, borderTopRightRadius: 25, paddingTop: 20 }}>
+            <View style={{ flex: 1, backgroundColor: '#fff', borderTopLeftRadius: 25, borderTopRightRadius: 25, paddingTop: 30 }}>
                 <Text style={{ paddingHorizontal: 16, fontFamily: 'SVN-Poppins', fontStyle: 'normal', fontWeight: 'bold', fontSize: 20, lineHeight: 41, letterSpacing: 0.374, color: '#1A1A1A', paddingBottom: 10 }}>Danh mục</Text>
                 <View style={{ width: '100%', flexWrap: 'wrap', flexDirection: 'row', paddingHorizontal: 11 }}>
                     {[1, 2, 3, 4].map((res) => {
@@ -186,6 +205,7 @@ export default function Admin({ navigation, user }) {
                 }
             </View>
             <ModalLoading visible={loading} />
+            <ModalLoading1 visible={loading1} />
 
         </ScrollView>
     )

@@ -29,7 +29,7 @@ export default function CommentScreen({ route, navigation, user }) {
         if (textSearch == '') return;
         setTextSearch('');
         let ar = dataApost.comments;
-        ar.push({ uid: route.params.myUser.uid, image: route.params.myUser.image, name: route.params.myUser.name, comment: textSearch, createAt: new Date() });
+        ar.push({ uid: route.params.myUser.uid, image: route.params.myUser.image, name: route.params.myUser.name, comment: textSearch, createAt: new Date().getTime() });
         await firestore()
             .collection('Post')
             .doc(idPost)
@@ -77,6 +77,7 @@ export default function CommentScreen({ route, navigation, user }) {
                     <HeaderCustomBot title={'Bài viết của ' + dataApost?.name} back={() => navigation.pop()} />
                     <View style={{ borderBottomWidth: 1, paddingTop: 15, borderColor: '#CFE1ED', marginHorizontal: 10, paddingBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <FormPostComment
+                            createAt={dataApost?.createAt}
                             checklike={dataApost?.like?.includes(user.uid)}
                             comment={dataApost?.comments?.length}
                             like={dataApost?.like?.length}
@@ -100,8 +101,8 @@ export default function CommentScreen({ route, navigation, user }) {
                                         <Text style={{ color: '#000', fontSize: 15 }}>{res.comment}</Text>
 
                                     </View>
-                                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                                        <Text style={{ fontSize: 14 }}>{moment(res.createAt).format('DD/MM/YYYY-h:mm')}</Text>
+                                    <View style={{ flexDirection: 'row', marginTop: 5, marginLeft: 5 }}>
+                                        <Text style={{ fontSize: 14, }}>{(res.createAt % 1 == 0 && new Date().getTime() - res.createAt < 60000) ? 'vừa xong' : (res.createAt % 1 == 0 && 3600000 > new Date().getTime() - res.createAt && new Date().getTime() - res.createAt > 60000) ? ((new Date().getTime() - res.createAt) / 60000).toFixed(0) + ' phút' : (res.createAt % 1 == 0 && 86400000 > new Date().getTime() - res.createAt && new Date().getTime() - res.createAt > 3600000) ? ((new Date().getTime() - res.createAt) / 3600000).toFixed(0) + ' giờ' : moment(res.createAt).format('DD/MM-H:mm')}</Text>
                                         <Text style={{ marginHorizontal: 10, fontWeight: 'bold', fontSize: 14 }}>thích</Text>
                                         <Text style={{ marginHorizontal: 10, fontWeight: 'bold', fontSize: 14 }}>trả lời</Text>
                                     </View>

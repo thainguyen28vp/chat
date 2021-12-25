@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TextInput, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, TextInput, Text, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
 import Formchat from '../components/Formchat';
 import HeaderHome from '../components/HeaderHome';
 import SearchInput from '../components/SearchInput';
@@ -21,33 +21,29 @@ export default function Home({ navigation, user }) {
     }, []);
 
 
-    useEffect(() => {
-        async function loaddata() {
-            const querySanp = await firestore().collection('users').where('uid', '!=', user.uid).get()
-            const allusers = querySanp.docs.filter(res => res.data().status === 'online' && res.data().listFriends.includes(user.uid)).map(res => res.data())
-            setUsers(allusers)
-        }
-        loaddata()
+    useEffect(async () => {
+        const querySanp = await firestore().collection('users').where('uid', '!=', user.uid).get()
+        const allusers = querySanp.docs.filter(res => res.data().status === 'online' && res.data().listFriends.includes(user.uid)).map(res => res.data())
+        setUsers(allusers)
+
     }, [users])
-    useEffect(() => {
-
-        async function loaddata() {
-
-            // const uid = await firestore().collection('chatrooms').where('idu', '==', user.uid).get()
-            const uid = await firestore().collection('chatrooms1').orderBy('createdAt', "desc").get()
-
-            const allusers = uid.docs.map(res => res.data())
-            // const all = allusers.filter(res => res.sentTo === user.uid || res.sentBy === user.uid)
-            // console.log('hehe', all)
-            let data = [];
-            allusers.map(res => {
-                if (res.userT.includes(user.uid)) data.push(res)
-            })
+    useEffect(async () => {
 
 
-            setDares(data)
-        }
-        loaddata()
+        // const uid = await firestore().collection('chatrooms').where('idu', '==', user.uid).get()
+        const uid = await firestore().collection('chatrooms1').orderBy('createdAt', "desc").get()
+
+        const allusers = uid.docs.map(res => res.data())
+        // const all = allusers.filter(res => res.sentTo === user.uid || res.sentBy === user.uid)
+        // console.log('hehe', all)
+        let data = [];
+        allusers.map(res => {
+            if (res.userT.includes(user.uid)) data.push(res)
+        })
+
+
+        setDares(data)
+
 
 
 
@@ -64,18 +60,18 @@ export default function Home({ navigation, user }) {
 
 
     return (
-        <View style={{ paddingBottom: 60, backgroundColor: 'white', flex: 1 }}>
+        <View style={{ backgroundColor: '#fff', flex: 1 }}>
             <HeaderHome title='Chat' SourceImg={myUser?.image} onPressUser={() => navigation.navigate("account")} onPressaddgroup={() => navigation.navigate("addgroupchat")} />
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} >
 
                 <TouchableOpacity style={styles.paddingSearch} onPress={() => navigation.navigate('SearchUser')}>
                     <View style={styles.inputSearch}>
-                        <FontAwesome5 name='search' size={22} color='#949494' />
-                        <Text style={{ color: '#242424', paddingLeft: 10 }} >Tìm kiếm...</Text>
+                        <FontAwesome5 name='search' size={22} color='#8EA0AB' />
+                        <Text style={{ color: '#8EA0AB', paddingLeft: 10 }} >Tìm kiếm...</Text>
                     </View>
                 </TouchableOpacity>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <View style={{ backgroundColor: 'transparent', paddingLeft: 20, alignItems: 'center' }} >
+                    <View style={{ backgroundColor: 'transparent', paddingLeft: 20, paddingBottom: 16, alignItems: 'center' }} >
                         <View style={[styles.align, styles.border]}>
                             <FontAwesome5 name='video' size={24} />
                         </View>
@@ -86,19 +82,17 @@ export default function Home({ navigation, user }) {
                         </View>
                     </View>
                     {
-
                         users.map((value) => {
-                           return <TouchableOpacity onPress={() => navigation.navigate('chat', {
+                            return <TouchableOpacity onPress={() => navigation.navigate('chat', {
                                 name: value.name, uid: value.uid, image: value.image
-                          })}>
-                              <UserOnline SourecImg={value.image} NameUser={value.name} />
+                            })}>
+                                <UserOnline SourecImg={value.image} NameUser={value.name} />
                             </TouchableOpacity>
                         })
                     }
                 </ScrollView>
 
                 {
-
                     dare.map((value) => {
                         let mon = new Date(value.createdAt * 1000).getMonth()
                         let d = new Date(value.createdAt * 1000).getDate()
@@ -108,11 +102,6 @@ export default function Home({ navigation, user }) {
                         h = checkTime(h)
                         const time = h + ':' + m
                         const daytn = d + ' thg ' + mon
-
-
-
-
-
                         return <View>
                             {value.us1.id == user.uid && (
                                 <TouchableOpacity onPress={() => navigation.navigate('chat', {
@@ -148,14 +137,8 @@ export default function Home({ navigation, user }) {
                                     />
                                 </TouchableOpacity>
                             )}
-
                         </View>
-
-
                     })
-
-
-
                 }
             </ScrollView>
         </View>
@@ -182,7 +165,7 @@ const styles = StyleSheet.create({
         paddingTop: 5
     },
     inputSearch: {
-        backgroundColor: '#F0F0F0',
+        backgroundColor: '#F3F7F9',
         flexDirection: 'row',
         height: 40,
         paddingLeft: 10,

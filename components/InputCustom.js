@@ -7,13 +7,13 @@ const InputCustom = ({ title, iconName, placeholder, onChangeText, onBlur, value
             <Text style={styles.textform}>{title}</Text>
             <TextInput placeholder={placeholder}
                 style={styles.input}
-                placeholderTextColor='#B4B4B4'
+                placeholderTextColor='#8EA0AB'
                 onChangeText={onChangeText}
                 onBlur={onBlur}
                 value={value}
                 secureTextEntry={iconName.localeCompare('lock') ? false : true}
             />
-            <FontAwesome5 name={iconName} style={styles.icon} />
+            <FontAwesome5 name={iconName} style={styles.icon} color='#8EA0AB' />
 
         </View>
     );
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         top: 40,
         left: 10,
         zIndex: 10,
-        color: "#767676",
+        color: "#8EA0AB",
 
 
     },

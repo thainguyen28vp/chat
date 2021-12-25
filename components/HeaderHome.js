@@ -1,9 +1,7 @@
 import React from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, StatusBar } from 'react-native';
 const HeaderHome = ({ SourceImg, title, onPressUser, number, clickFriendAwait, onPressaddgroup }) => {
-
-
     return (
         <View style={styles.container}>
             <View style={styles.alignContent}>
@@ -58,6 +56,7 @@ const HeaderHome = ({ SourceImg, title, onPressUser, number, clickFriendAwait, o
 
 const styles = StyleSheet.create({
     container: {
+        paddingTop: StatusBar.currentHeight,
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingLeft: 20,

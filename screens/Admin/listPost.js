@@ -26,9 +26,7 @@ export default function ListPost({ navigation, route }) {
 
     useEffect(() => {
         thongke()
-        setTimeout(() => {
-            setLoading(false);
-        }, 2000);
+
     }, [route?.params?.reload])
     async function thongke() {
         await firestore().collection('Post').where('status', '==', 0).get().then(res => {
@@ -40,6 +38,7 @@ export default function ListPost({ navigation, route }) {
         await firestore().collection('Post').where('status', '==', 1).get().then(res => {
             seta2(res.docs.length)
         })
+        setLoading(false);
     }
 
 
@@ -88,10 +87,8 @@ export default function ListPost({ navigation, route }) {
         <View
             style={{ flex: 1, backgroundColor: '#fff' }}>
             <StatusBar barStyle='dark-content' />
-            <View style={{ paddingTop: StatusBar.currentHeight }}>
 
-                <HeaderCustomBot title='Quản lý bài đăng' back={() => navigation.pop()} />
-            </View>
+            <HeaderCustomBot title='Quản lý bài đăng' back={() => navigation.pop()} />
             <View style={{ paddingHorizontal: 16, paddingVertical: 24, flexDirection: 'row', justifyContent: 'space-between' }}>
 
                 <TouchableOpacity

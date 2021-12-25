@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     StyleSheet,
     Text,
@@ -22,6 +22,7 @@ import firestore from '@react-native-firebase/firestore'
 import ButtonCustom from '../components/ButtonCustom';
 import Toast from 'react-native-simple-toast';
 import { HeaderCustomBot } from './Admin/custom';
+import { ModalLoading1 } from '../components/Loaing1';
 
 
 const LoginSchema = Yup.object().shape({
@@ -37,7 +38,9 @@ const LoginSchema = Yup.object().shape({
     email: Yup.string().email('email không đúng định dạng.').required('Vui lòng nhập email.'),
 });
 export default function SignUp({ navigation, user }) {
+    const [loading, setLoading] = useState(false);
     async function Signup(values) {
+        setLoading(true);
         try {
             const result = await auth().createUserWithEmailAndPassword(values.email, values.password)
             await firestore().collection('users').doc(result.user.uid).set({
@@ -55,11 +58,11 @@ export default function SignUp({ navigation, user }) {
                 decentralization: 0
             })
             Toast.show('Đăng ký thành công.', Toast.LONG);
-            navigation.pop();
 
         } catch (error) {
             if (error.code == 'auth/email-already-in-use') Toast.show('Địa chỉ email đã tồn tại.', Toast.LONG)
-            else Toast.show('Có lỗi xảy ra . Vui lòng thử lại sau.')
+            else Toast.show('Có lỗi xảy ra . Vui lòng thử lại sau.');
+            setLoading(false);
         }
     }
     function isFormVaild(isValid, touched) {
@@ -67,7 +70,7 @@ export default function SignUp({ navigation, user }) {
     }
     return (
 
-        <>
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
 
             <HeaderCustomBot title='Đăng ký' back={() => navigation.pop()} />
             <KeyboardAvoidingView
@@ -163,10 +166,12 @@ export default function SignUp({ navigation, user }) {
                                 </TouchableOpacity>
                             </View>
                         </View>
+                        <ModalLoading1 visible={loading} />
                     </View>
+
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
-        </>
+        </View>
 
     );
 }

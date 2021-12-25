@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Image, TextInput, Text, View, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { ScrollView, StyleSheet, Image, TextInput, Text, View, Dimensions, TouchableOpacity, ActivityIndicator, StatusBar } from 'react-native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { launchImageLibrary } from 'react-native-image-picker';
 import firestore from '@react-native-firebase/firestore'
@@ -61,7 +61,7 @@ export default function NewPost({ navigation, user, route }) {
                 await uploadTask.on('state_changed',
                     (snapshot) => {
                         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        if (progress == 100) console.log(); ('Upload thành công')
+                        if (progress == 100) console.log('Upload thành công')
                     },
                     (error) => {
                         alert("error uploading image")
@@ -74,7 +74,7 @@ export default function NewPost({ navigation, user, route }) {
                                 firestore().collection('Post').add({
                                     title: textInput.trim() ? textInput : null,
                                     image: images,
-                                    createAt: new Date(),
+                                    createAt: new Date().getTime(),
                                     like: [],
                                     avt: myUser.image,
                                     email: user.email,
@@ -85,25 +85,27 @@ export default function NewPost({ navigation, user, route }) {
                                 });
                             }
                         });
-                        await setloading(false);
-                        navigation.pop();
-                        SimpleToast.show('Vui lòng chờ admin phê duyệt bài đăng.', SimpleToast.LONG);
+
                     }
                 );
-            })
+            });
+            await setloading(false);
+            navigation.pop();
+            SimpleToast.show('Vui lòng chờ admin phê duyệt bài đăng.', SimpleToast.LONG);
         }
         else {
             firestore().collection('Post').add({
                 title: textInput.trim() ? textInput : null,
                 image: images,
-                createAt: new Date(),
+                createAt: new Date().getTime(),
                 like: [],
                 avt: myUser.image,
                 email: user.email,
                 name: myUser.name,
                 status: 0,
                 uid: user.uid,
-                comments: []
+                comments: [],
+                description: null
             });
             navigation.pop();
             SimpleToast.show('Vui lòng chờ admin phê duyệt bài đăng.', SimpleToast.LONG);
@@ -132,7 +134,7 @@ export default function NewPost({ navigation, user, route }) {
                         disabled={(textInput != '' || datas?.image?.length != 0) ? false : true}
                         onPress={() => newPost()}
                         style={{ alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={[styles.txtPost, (textInput != '' || datas?.image?.length != 0) && styles.txtActivePost]}>Đăng</Text>
+                        <Text style={[styles.txtPost, (textInput != '' || image?.length != 0) && styles.txtActivePost]}>Đăng</Text>
                     </TouchableOpacity>
                 </View>
                 <View >
@@ -216,6 +218,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     header: {
+        marginTop: StatusBar.currentHeight,
         flexDirection: 'row',
         justifyContent: 'space-between',
         height: height * 0.07,
@@ -274,6 +277,6 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     txtActivePost: {
-        color: 'red'
+        color: '#2F80ED'
     }
 })

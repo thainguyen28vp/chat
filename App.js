@@ -44,6 +44,7 @@ import CommentScreen from './screens/CommentScreen';
 import { UpdateProfile } from './screens/UpdateProfile';
 import ListAdmin from './screens/Admin/listAdmin';
 import ForgotPass from './screens/ForgotPass';
+import Error from './screens/Error';
 
 const Stack = createStackNavigator();
 
@@ -82,7 +83,6 @@ const Navigation = () => {
         firestore().collection('users')
           .doc(userExist.uid)
           .get().then(res => {
-            console.log(res.data())
             setuser(res.data())
           })
       }
@@ -175,20 +175,27 @@ const Navigation = () => {
                   </Stack.Screen>
                 </>
                 :
-                <>
-                  <Stack.Screen name="admin"
-                    options={{ headerShown: false }} >
-                    {props => <Admin {...props} user={user} />}
-                  </Stack.Screen>
-                  <Stack.Screen name="detailUser" component={DetailUser} options={{ headerShown: false }} />
-                  <Stack.Screen name="detailPost" component={DetailPost} options={{ headerShown: false }} />
-                  <Stack.Screen name="listUser" component={ListUser} options={{ headerShown: false }} />
+                user.decentralization == 1 ?
+                  <>
+                    <Stack.Screen name="admin"
+                      options={{ headerShown: false }} >
+                      {props => <Admin {...props} user={user} />}
+                    </Stack.Screen>
+                    <Stack.Screen name="detailUser" component={DetailUser} options={{ headerShown: false }} />
+                    <Stack.Screen name="detailPost" component={DetailPost} options={{ headerShown: false }} />
+                    <Stack.Screen name="listUser" component={ListUser} options={{ headerShown: false }} />
 
-                  <Stack.Screen name="listAdmin" component={ListAdmin} options={{ headerShown: false }} />
-                  <Stack.Screen name="listPost" component={ListPost} options={{ headerShown: false }} />
-                  <Stack.Screen name="pending" component={Pending} options={{ headerShown: false }} />
-                  <Stack.Screen name="canceled" component={Canceled} options={{ headerShown: false }} />
-                  <Stack.Screen name="approved" component={Approved} options={{ headerShown: false }} /></>
+                    <Stack.Screen name="listAdmin" component={ListAdmin} options={{ headerShown: false }} />
+                    <Stack.Screen name="listPost" component={ListPost} options={{ headerShown: false }} />
+                    <Stack.Screen name="pending" component={Pending} options={{ headerShown: false }} />
+                    <Stack.Screen name="canceled" component={Canceled} options={{ headerShown: false }} />
+                    <Stack.Screen name="approved" component={Approved} options={{ headerShown: false }} />
+                  </>
+                  :
+                  <Stack.Screen name="error"
+                    options={{ headerShown: false }} >
+                    {props => <Error {...props} user={user} />}
+                  </Stack.Screen>
             }
           </>
           :
@@ -210,7 +217,7 @@ function App() {
   return (
     <>
       <PaperProvider theme={theme}>
-        <StatusBar barStyle="dark-content" backgroundColor='white' />
+        <StatusBar translucent backgroundColor='transparent' barStyle='dark-content' />
         <View style={styles.container}>
           <Navigation />
 

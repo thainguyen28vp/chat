@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Text, View, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
+import { Text, View, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions, StatusBar } from 'react-native'
 import firestore from '@react-native-firebase/firestore'
 
 import SearchInput from '../components/SearchInput'
@@ -32,23 +32,19 @@ export default function SearchUser({ user, navigation }) {
             const users = [];
             for (let index = 0; index < res.docs.length; index++) {
                 const element = res.docs[index];
-                users.push(element.data())
+                if (element.data().decentralization != 1) users.push(element.data())
             }
             setallUsers(users);
         });
         fbUser.doc(user.uid).onSnapshot(res => setmyUser(res.data()))
     }, [])
-    useEffect(() => {
+    useEffect(async () => {
+        let users = [];
         search.indexOf('@') == -1 ?
-            fbUser.onSnapshot(res => {
-                const users = res.docs.filter(result => result.data().name.toLowerCase().search(search.toLowerCase()) > -1 && result.data().uid != user.uid);
-                setUsers(users);
-            })
+            users = allUsers.filter(result => result.name.toLowerCase().search(search.toLowerCase()) > -1 && result.uid != user.uid)
             :
-            fbUser.onSnapshot(res => {
-                const users = res.docs.filter(result => result.data().email.toLowerCase().search(search.toLowerCase()) > -1 && result.data().uid != user.uid);
-                setUsers(users);
-            })
+            users = allUsers.filter(result => result.email.toLowerCase().search(search.toLowerCase()) > -1 && result.uid != user.uid)
+        setUsers(users)
 
     }, [search])
 
@@ -63,7 +59,9 @@ export default function SearchUser({ user, navigation }) {
     }
     const Items = ({ item }) => {
         return (
-            <TouchableOpacity style={{ flex: 1, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#F0F0F0', flexDirection: 'row', paddingVertical: 10 }}>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('UserScreen', { friend: item })}
+                style={{ flex: 1, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#F0F0F0', flexDirection: 'row', paddingVertical: 10 }}>
                 <Image source={{ uri: item.image }} style={{ height: 44, width: 44, borderRadius: 22 }} />
                 <Text style={{ paddingLeft: 10, fontSize: 18 }}>{item.name}</Text>
             </TouchableOpacity>
@@ -71,11 +69,11 @@ export default function SearchUser({ user, navigation }) {
     }
     const Histoty = ({ myUser, allUsers }) => {
         return (
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', }}>
                 {
                     myUser?.HistorySearch?.slice().reverse().map(result => {
                         return (
-                            <View>
+                            <View style={{ width: '25%', alignItems: 'center' }}>
                                 {
                                     allUsers.filter(res => res.uid === result).map(userd => {
                                         return (
@@ -125,11 +123,11 @@ export default function SearchUser({ user, navigation }) {
 
 
     return (
-        <View style={{ flex: 1, backgroundColor: 'white', paddingLeft: 15, paddingRight: 15 }}>
-            <View style={{ flexDirection: 'row' }}>
+        <View style={{ flex: 1, backgroundColor: '#fff', paddingHorizontal: 16, paddingTop: StatusBar.currentHeight + 5 }}>
+            <View style={{ flexDirection: 'row', paddingBottom: 15 }}>
                 <SearchInput value={valueIn} onChange={text => getValue(text)} placeholder='Tìm kiếm...' />
                 <TouchableOpacity style={{ justifyContent: 'center', height: 40, }} onPress={() => navigation.goBack()}>
-                    <Text style={{ fontSize: 16, color: 'skyblue' }}>Hủy</Text>
+                    <Text style={{ fontSize: 16, color: '#2F80ED' }}>Hủy</Text>
                 </TouchableOpacity>
             </View>
             {
@@ -139,54 +137,25 @@ export default function SearchUser({ user, navigation }) {
                             Users.map((res, index) => {
                                 return (
                                     <TouchableOpacity
-                                        onPress={() => ClickUser(res.data())}
+                                        onPress={() => ClickUser(res)}
                                         key={index}
                                         style={styles.formSearch}
                                     >
                                         <View
                                             style={{ flexDirection: 'row', alignItems: 'center', }}>
-                                            <Image source={{ uri: res.data().image }} style={styles.avt} />
+                                            <Image source={{ uri: res.image }} style={styles.avt} />
                                             <View >
-                                                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{res.data().name}</Text>
-                                                {
-                                                    myUser.listFriends.map(result => {
-                                                        let sum = 0;
-                                                        let friend = [];
-                                                        if (res.data().listFriends.includes(result)) sum++;
-                                                        allUsers.map(res => {
-                                                            if (res.uid === result) friend.push(res.name)
-                                                        })
-                                                        return (
-                                                            <View style={{ flexDirection: 'row' }}>
-                                                                {
-                                                                    sum != 0 ?
-                                                                        <Text style={{ fontSize: 12 }}>
-                                                                            <Text>{sum} bạn chung : </Text>
-                                                                            {
-                                                                                friend.length == 1 ?
-                                                                                    <Text>{friend[0]}</Text>
-                                                                                    :
-                                                                                    friend.length == 2 ?
-                                                                                        <Text>{friend[0]},{friend[1]}</Text>
-                                                                                        :
-                                                                                        <Text>{friend[0]},{friend[1]}...</Text>
-                                                                            }
-                                                                        </Text>
-                                                                        : <View></View>
-                                                                }
-                                                            </View>
-                                                        )
-                                                    })
-                                                }
+                                                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{res.name}{res.numberFriend}</Text>
+                                                {/* laalala */}
                                             </View>
                                         </View>
                                         <View>
                                             {
-                                                myUser.listFriends.includes(res.data().uid) ?
+                                                myUser.listFriends.includes(res.uid) ?
                                                     <ButtonFriend title='bạn bè' iconName='user-plus' /> :
-                                                    myUser.friendRequest.includes(res.data().uid) ?
+                                                    myUser.friendRequest.includes(res.uid) ?
                                                         <ButtonFriend title='đã gửi lời mời' iconName='user-plus' /> :
-                                                        myUser.friendAwait.includes(res.data().uid) ?
+                                                        myUser.friendAwait.includes(res.uid) ?
                                                             <ButtonFriend title='chờ xác nhận' iconName='user-plus' /> :
                                                             <ButtonFriend title='kết bạn' iconName='user-plus' />
                                             }
@@ -201,14 +170,14 @@ export default function SearchUser({ user, navigation }) {
                     :
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {
-                            myUser?.HistorySearch?.length != 0 && <Text style={{ paddingBottom: 10, fontSize: 16 }}>Lịch sử tìm kiếm</Text>
+                            myUser?.HistorySearch?.length != 0 && <Text style={{ paddingBottom: 10, color: '#52575C', fontSize: 16 }}>Lịch sử tìm kiếm</Text>
                         }
                         <Histoty myUser={myUser} allUsers={allUsers} />
                         <View >
-                            <Text style={{ fontSize: 16 }}>Gợi ý</Text>
+                            <Text style={{ fontSize: 16, color: '#52575C' }}>Gợi ý</Text>
                             <View>
                                 {
-                                    allUsers.map(res => {
+                                    allUsers.slice(0, 10).filter(user => user.decentralization == 0).map(res => {
                                         return (
                                             <Items item={res} />
                                         )

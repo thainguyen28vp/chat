@@ -42,20 +42,6 @@ export default function ListAdmin({ navigation }) {
         await setdatau(allusers)
         setLoading(false);
     }, [])
-    // function thongketg() {
-    //     setHide(!hide)
-    //     let check = []
-    //     let ngay = []
-    //     let a = [6, 5, 4, 3, 2, 1, 0]
-    //     a.map((res) => {
-    //         const data = datauser.filter(res1 => moment(res1.createdAt).format('DDMMYYYY') == moment(Date.now() - res * 24 * 3600 * 1000).format('DDMMYYYY'))
-    //         check.push(data.length)
-    //         ngay.push(moment(Date.now() - res * 24 * 3600 * 1000).format('DD/MM'))
-    //     })
-    //     setthongke(check)
-    //     setngay(ngay)
-    //     console.log(ngay, check)
-    // }
     const Form = ({ item }) => {
         return <TouchableOpacity
             onPress={() => navigation.navigate('detailUser', item)}
@@ -136,15 +122,9 @@ export default function ListAdmin({ navigation }) {
                     <Text style={styles.txtPost}>Thêm tài khoản</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', paddingHorizontal: 16 }}>
-                <View style={{ flexDirection: 'row', width: screenWidth - 32, alignItems: 'center', marginTop: 20, backgroundColor: '#F3F7F9', marginBottom: 24, height: 36, borderRadius: 10, }}>
-                    <Ic_search />
-                    <TextInput style={{ width: '100%' }} placeholder='Tìm kiếm' onChangeText={''} value={''} />
-                </View>
-            </View>
 
 
-            <View style={{ paddingHorizontal: 16 }}>
+            <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
                 {
                     datauser.map(res => {
                         return <Form item={res} />

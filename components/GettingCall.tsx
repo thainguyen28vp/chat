@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { StyleSheet,  View, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import Button from './Button';
 
 
@@ -10,7 +10,7 @@ interface Props {
 }
 export default function GettingCall(props: Props) {
     return (
-        <View>
+        <View style={{ flex: 1 }}>
             <Image style={styles.image} source={require('../img/pic3.jpg')} />
             <View style={styles.bcontainer}>
                 <Button
@@ -24,8 +24,8 @@ export default function GettingCall(props: Props) {
                     backgroundColor="red"
                     onPress={props.hangup}
                     style={{ marginLeft: 30 }}
-                    />
-               
+                />
+
             </View>
         </View>
     )
